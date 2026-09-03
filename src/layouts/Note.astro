@@ -1,0 +1,23 @@
+---
+import Base from './Base.astro';
+
+const { frontmatter } = Astro.props;
+---
+
+<Base title={`${frontmatter.title} — Xinyi Ye`} description={frontmatter.description}>
+  <article class="prose">
+    <a class="back" href="/">← Back to the workbench</a>
+    <p class="eyebrow">Working note · {frontmatter.date}</p>
+    <h1>{frontmatter.title}</h1>
+    <p class="dek">{frontmatter.description}</p>
+    <div class="rule"></div>
+    <slot />
+  </article>
+</Base>
+
+<style>
+  .back { display: inline-block; margin-bottom: 70px; color: var(--muted); font: 11px var(--mono); text-underline-offset: 5px; }
+  .dek { font: 400 22px/1.5 var(--serif) !important; color: var(--muted) !important; }
+  .rule { width: 100px; height: 5px; margin: 38px 0 50px; background: var(--acid); }
+  :global(.prose code) { font: 14px var(--mono); background: #e6e3da; padding: 2px 5px; }
+</style>
