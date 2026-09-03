@@ -17,10 +17,10 @@ const projects = [
   {
     number: '02',
     type: 'Analytics architecture',
-    title: 'Queryable now. Complete later.',
-    subtitle: 'Append attention updates without delaying the pageview.',
-    description: 'A fourth solution that emits Page Viewed immediately, appends idempotent engaged-time delta segments, and lets metric middleware aggregate them by Page View ID.',
-    tags: ['Engaged time', 'Append-only events', 'Metric middleware'],
+    title: 'One page view. Completed later.',
+    subtitle: 'Enrich the original event through a delayed-event service.',
+    description: 'The SDK sends Page Viewed to a delayed service, heartbeats update its pending engaged time, and the service forwards that same event to Amplitude with an engaged-time property when finalized.',
+    tags: ['Engaged time', 'Delayed events', 'Heartbeats'],
     href: 'https://mercy811.github.io/amplitude-engaged-time-segments-poc/',
     source: 'https://github.com/Mercy811/amplitude-engaged-time-segments-poc',
     tone: 'pink',
@@ -108,7 +108,7 @@ const projects = [
             {project.visual === 'heartbeat' && <><div class="pulse-line"></div><div class="metric"><span>heartbeat</span><strong>01.0s</strong></div><div class="metric bottom"><span>flush after</span><strong>10.0s</strong></div></>}
             {project.visual === 'shadow' && <div class="shadow-stack"><i></i><i></i><i></i><b>event<br/>path</b></div>}
             {project.visual === 'network' && <div class="network"><i></i><i></i><i></i><i></i><span>install</span><span>ad</span><span>signal</span></div>}
-            {project.visual === 'segments' && <div class="segments"><span>PAGE VIEWED</span><i></i><b>+ 4.8s</b><i></i><b>+ 7.1s</b><i></i><strong>Σ 11.9s</strong></div>}
+            {project.visual === 'segments' && <div class="segments"><span>PAGE VIEWED · PENDING</span><i></i><b>HEARTBEAT</b><i></i><b>FINALIZE</b><i></i><strong>engaged_time: 11.9s</strong></div>}
             {project.visual === 'lyrics' && <div class="lyrics"><span>ชอบตัวเอง</span><span>chɔ̂ɔp dtua-eeng</span><span>I like myself</span><div class="sound-bars">▂▄▆█▆▃▅▇▅▂</div></div>}
           </div>
           <div class="project-copy">
