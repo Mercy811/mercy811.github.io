@@ -16,6 +16,18 @@ const projects = [
   },
   {
     number: '02',
+    type: 'Analytics architecture',
+    title: 'Queryable now. Complete later.',
+    subtitle: 'Append attention updates without delaying the pageview.',
+    description: 'A fourth solution that emits Page Viewed immediately, appends idempotent engaged-time delta segments, and lets metric middleware aggregate them by Page View ID.',
+    tags: ['Engaged time', 'Append-only events', 'Metric middleware'],
+    href: 'https://mercy811.github.io/amplitude-engaged-time-segments-poc/',
+    source: 'https://github.com/Mercy811/amplitude-engaged-time-segments-poc',
+    tone: 'pink',
+    visual: 'segments',
+  },
+  {
+    number: '03',
     type: 'Analytics POC',
     title: 'AutoCapture beyond the light DOM',
     subtitle: 'What breaks in shadow trees—and how to recover the signal.',
@@ -27,7 +39,7 @@ const projects = [
     visual: 'shadow',
   },
   {
-    number: '03',
+    number: '04',
     type: 'Systems explainer',
     title: 'Mapping iOS mobile attribution',
     subtitle: 'A visual model of a deliberately opaque ecosystem.',
@@ -39,7 +51,7 @@ const projects = [
     visual: 'network',
   },
   {
-    number: '04',
+    number: '05',
     type: 'Side project',
     title: 'Learn Thai through the songs you love',
     subtitle: 'From passive listening to line-by-line practice.',
@@ -96,6 +108,7 @@ const projects = [
             {project.visual === 'heartbeat' && <><div class="pulse-line"></div><div class="metric"><span>heartbeat</span><strong>01.0s</strong></div><div class="metric bottom"><span>flush after</span><strong>10.0s</strong></div></>}
             {project.visual === 'shadow' && <div class="shadow-stack"><i></i><i></i><i></i><b>event<br/>path</b></div>}
             {project.visual === 'network' && <div class="network"><i></i><i></i><i></i><i></i><span>install</span><span>ad</span><span>signal</span></div>}
+            {project.visual === 'segments' && <div class="segments"><span>PAGE VIEWED</span><i></i><b>+ 4.8s</b><i></i><b>+ 7.1s</b><i></i><strong>Σ 11.9s</strong></div>}
             {project.visual === 'lyrics' && <div class="lyrics"><span>ชอบตัวเอง</span><span>chɔ̂ɔp dtua-eeng</span><span>I like myself</span><div class="sound-bars">▂▄▆█▆▃▅▇▅▂</div></div>}
           </div>
           <div class="project-copy">
@@ -159,7 +172,7 @@ const projects = [
   .project { display: grid; grid-template-columns: 100px minmax(320px, .85fr) 1.15fr; gap: 40px; padding: 50px 0; border-bottom: 1px solid var(--line); }
   .project-meta { display: flex; flex-direction: column; gap: 8px; font: 10px var(--mono); color: var(--muted); text-transform: uppercase; }
   .project-visual { position: relative; min-height: 310px; overflow: hidden; border-radius: 2px; }
-  .lime { background: var(--acid); } .violet { background: var(--violet); } .orange { background: var(--orange); } .blue { background: #8ed8ff; }
+  .lime { background: var(--acid); } .violet { background: var(--violet); } .orange { background: var(--orange); } .blue { background: #8ed8ff; } .pink { background: #ffb4cf; }
   .project-copy { padding: 12px 0; }
   .project-copy h3 { font: 500 clamp(34px, 4vw, 54px)/1 var(--serif); letter-spacing: -.035em; margin: 14px 0 18px; max-width: 570px; }
   .project-copy > p:not(.eyebrow) { max-width: 600px; color: #4c544e; font-size: 16px; }
@@ -175,6 +188,7 @@ const projects = [
   .shadow-stack i { position: absolute; width: 58%; height: 48%; border: 2px solid var(--ink); background: #ffffff20; left: 21%; top: 24%; transform: rotate(-4deg); }.shadow-stack i:nth-child(2) { transform: translate(18px,-16px) rotate(3deg); }.shadow-stack i:nth-child(3) { transform: translate(36px,-32px) rotate(8deg); }.shadow-stack b { position: absolute; bottom: 28px; left: 30px; font: 500 28px/1 var(--mono); }
   .network i { position: absolute; width: 18px; height: 18px; background: var(--ink); border-radius: 50%; }.network i:nth-child(1){left:16%;top:24%}.network i:nth-child(2){right:16%;top:20%}.network i:nth-child(3){left:32%;bottom:18%}.network i:nth-child(4){right:25%;bottom:30%}.network:before,.network:after{content:'';position:absolute;left:18%;top:28%;width:68%;height:1px;background:var(--ink);transform:rotate(21deg);transform-origin:left}.network:after{transform:rotate(-18deg);top:72%}.network span{position:absolute;font:10px var(--mono);}.network span:nth-of-type(1){left:12%;top:14%}.network span:nth-of-type(2){right:13%;top:12%}.network span:nth-of-type(3){right:17%;bottom:18%}
   .lyrics { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }.lyrics span:first-child{font:500 36px var(--sans)}.lyrics span:nth-child(2){font:13px var(--mono);margin-top:10px}.lyrics span:nth-child(3){font:500 14px var(--serif);margin-top:8px}.sound-bars{position:absolute;bottom:24px;font:20px var(--mono);letter-spacing:4px}
+  .segments { position:absolute; inset:24px; display:grid; grid-template-columns:1fr auto; align-items:center; font:11px var(--mono); }.segments span{grid-column:1/-1;border:2px solid var(--ink);padding:12px;background:#ffffff75}.segments i{height:2px;background:var(--ink)}.segments b{border:1px solid var(--ink);padding:8px}.segments strong{grid-column:1/-1;text-align:right;font-size:26px}
   .thoughts { padding-bottom: 90px; }
   .note-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
   .note-grid a { padding: 42px 38px; background: var(--paper); text-decoration: none; }
