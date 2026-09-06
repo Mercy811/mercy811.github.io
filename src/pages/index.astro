@@ -59,6 +59,7 @@ const projects = [
     tags: ['Language learning', 'Product design', 'JavaScript'],
     href: 'https://thai-song-learner.vercel.app/',
     source: 'https://github.com/Mercy811/thai-song-learner',
+    journal: '/projects/thaicue/',
     tone: 'blue',
     visual: 'lyrics',
   },
@@ -116,7 +117,7 @@ const projects = [
             <h3>{project.title}</h3>
             <p>{project.description}</p>
             <ul>{project.tags.map((tag) => <li>{tag}</li>)}</ul>
-            <div class="links"><a href={project.href} target="_blank" rel="noreferrer">Open project ↗</a>{project.source && <a href={project.source} target="_blank" rel="noreferrer">Source ↗</a>}</div>
+            <div class="links"><a href={project.href} target="_blank" rel="noreferrer">Open project ↗</a>{project.journal && <a href={project.journal}>Product notes →</a>}{project.source && <a href={project.source} target="_blank" rel="noreferrer">Source ↗</a>}</div>
           </div>
         </article>
       ))}

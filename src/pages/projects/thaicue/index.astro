@@ -1,0 +1,64 @@
+---
+import Base from '../../../layouts/Base.astro';
+
+const noteModules = import.meta.glob('./notes/*.md', { eager: true });
+const notes = Object.entries(noteModules)
+  .map(([path, module]: [string, any]) => ({
+    ...module.frontmatter,
+    href: path.replace(/^\./, '/projects/thaicue').replace(/\.md$/, '/'),
+  }))
+  .sort((a, b) => (b.order ?? 0) - (a.order ?? 0));
+---
+
+<Base title="ThaiCue product notes — Xinyi Ye" description="An evolving notebook about building ThaiCue, a product for learning Thai through songs.">
+  <section class="journal-hero shell">
+    <a class="back" href="/">← Back to the workbench</a>
+    <p class="eyebrow">Side project · living notebook</p>
+    <h1>Building <em>ThaiCue</em><br />in public.</h1>
+    <div class="intro">
+      <p>I’m building a product for learning Thai through songs. This is where I keep the questions behind the features: what makes a learning tool useful, what makes someone return, and what AI changes—or does not change—about building a good product.</p>
+      <div class="actions">
+        <a href="https://thai-song-learner.vercel.app/" target="_blank" rel="noreferrer">Try ThaiCue ↗</a>
+        <a href="https://github.com/Mercy811/thai-song-learner" target="_blank" rel="noreferrer">View source ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="entries shell">
+    <div class="entries-head"><p class="eyebrow">Product notes</p><span>{String(notes.length).padStart(2, '0')} entries</span></div>
+    {notes.map((note, index) => (
+      <a class="entry" href={note.href}>
+        <span class="number">{String(index + 1).padStart(2, '0')}</span>
+        <div><p class="eyebrow">{note.topic} · {note.readingTime}</p><h2>{note.title}</h2><p>{note.description}</p></div>
+        <span class="arrow">Read →</span>
+      </a>
+    ))}
+  </section>
+
+  <aside class="how-it-grows shell">
+    <p class="eyebrow">A structure that can grow</p>
+    <p>Each idea lives as one short note inside this project. New notes automatically appear here, so the project can accumulate a history without turning the homepage into an endless list.</p>
+  </aside>
+</Base>
+
+<style>
+  .journal-hero { padding: 70px 0 90px; }
+  .back { display: inline-block; margin-bottom: 80px; color: var(--muted); font: 11px var(--mono); text-underline-offset: 5px; }
+  h1 { margin: 18px 0 45px; font: 500 clamp(58px, 9vw, 112px)/.84 var(--serif); letter-spacing: -.06em; }
+  h1 em { color: #1687c2; font-weight: 400; }
+  .intro { display: grid; grid-template-columns: 1.3fr .7fr; gap: 70px; border-top: 1px solid var(--ink); padding-top: 28px; }
+  .intro > p { margin: 0; max-width: 690px; font: 400 21px/1.55 var(--serif); }
+  .actions { display: flex; align-items: flex-start; justify-content: flex-end; gap: 12px; flex-wrap: wrap; }
+  .actions a { padding: 10px 14px; border: 1px solid var(--ink); border-radius: 100px; font: 11px var(--mono); text-decoration: none; }
+  .entries { border-top: 1px solid var(--ink); }
+  .entries-head { display: flex; justify-content: space-between; padding: 20px 0; border-bottom: 1px solid var(--line); }
+  .entries-head p { margin: 0; }.entries-head span { color: var(--muted); font: 11px var(--mono); }
+  .entry { display: grid; grid-template-columns: 90px 1fr auto; gap: 30px; align-items: start; padding: 42px 0; border-bottom: 1px solid var(--line); text-decoration: none; }
+  .entry:hover h2 { color: #1687c2; }
+  .number, .arrow { font: 11px var(--mono); }.number { color: var(--muted); }.arrow { padding-top: 8px; }
+  .entry h2 { margin: 12px 0 12px; font: 500 clamp(32px, 4.5vw, 52px)/1 var(--serif); letter-spacing: -.035em; transition: color .15s ease; }
+  .entry p:not(.eyebrow) { max-width: 680px; margin: 0; color: var(--muted); }
+  .how-it-grows { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; margin-top: 80px; padding: 32px; background: #d9eff9; }
+  .how-it-grows p { margin: 0; }.how-it-grows p:last-child { font: 400 20px/1.5 var(--serif); }
+  @media (max-width: 700px) { .intro { grid-template-columns: 1fr; gap: 28px; }.actions { justify-content: flex-start; }.entry { grid-template-columns: 42px 1fr; gap: 12px; }.arrow { display: none; }.how-it-grows { grid-template-columns: 1fr; }.journal-hero { padding-top: 48px; } }
+</style>
