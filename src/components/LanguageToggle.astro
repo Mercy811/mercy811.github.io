@@ -1,0 +1,28 @@
+<div class="language-toggle" role="group" aria-label="Language / 语言">
+  <button type="button" data-language-button="en" aria-pressed="true">EN</button>
+  <button type="button" data-language-button="zh" aria-pressed="false">中文</button>
+</div>
+
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    const buttons = document.querySelectorAll('[data-language-button]');
+    const setLanguage = (language) => {
+      root.dataset.language = language;
+      root.lang = language === 'zh' ? 'zh-CN' : 'en';
+      document.title = language === 'zh' ? root.dataset.titleZh : root.dataset.titleEn;
+      const description = document.querySelector('meta[name="description"]');
+      if (description) description.content = language === 'zh' ? root.dataset.descriptionZh : root.dataset.descriptionEn;
+      buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.languageButton === language)));
+    };
+    buttons.forEach((button) => button.addEventListener('click', () => setLanguage(button.dataset.languageButton)));
+    setLanguage('en');
+  })();
+</script>
+
+<style>
+  .language-toggle { display: inline-flex; padding: 3px; border: 1px solid var(--ink); border-radius: 100px; background: var(--paper); }
+  button { min-width: 48px; padding: 7px 11px; border: 0; border-radius: 100px; background: transparent; color: var(--ink); font: 500 11px var(--mono); cursor: pointer; }
+  button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  button:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+</style>

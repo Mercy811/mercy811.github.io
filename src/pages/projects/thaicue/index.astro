@@ -1,49 +1,51 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import LanguageToggle from '../../../components/LanguageToggle.astro';
 
-const noteModules = import.meta.glob('./notes/*.md', { eager: true });
+const noteModules = import.meta.glob('./notes/*.{md,astro}', { eager: true });
 const notes = Object.entries(noteModules)
   .map(([path, module]: [string, any]) => ({
-    ...module.frontmatter,
-    href: path.replace(/^\./, '/projects/thaicue').replace(/\.md$/, '/'),
+    ...(module.note ?? module.frontmatter),
+    href: path.replace(/^\./, '/projects/thaicue').replace(/\.(md|astro)$/, '/'),
   }))
   .sort((a, b) => (b.order ?? 0) - (a.order ?? 0));
 ---
 
-<Base title="ThaiCue product notes — Xinyi Ye" description="An evolving notebook about building ThaiCue, a product for learning Thai through songs.">
+<Base title="ThaiCue product notes — Xinyi Ye" description="An evolving notebook about building ThaiCue, a product for learning Thai through songs." titleZh="ThaiCue 产品思考 — Xinyi Ye" descriptionZh="一本持续记录 ThaiCue 产品设计与泰语学习体验的笔记。">
   <section class="journal-hero shell">
-    <a class="back" href="/">← Back to the workbench</a>
-    <p class="eyebrow">Side project · living notebook</p>
-    <h1>Building <em>ThaiCue</em><br />in public.</h1>
+    <div class="hero-tools"><a class="back" href="/"><span data-lang="en">← Back to the workbench</span><span data-lang="zh">← 返回首页</span></a><LanguageToggle /></div>
+    <p class="eyebrow"><span data-lang="en">Side project · living notebook</span><span data-lang="zh">个人项目 · 持续更新的笔记</span></p>
+    <h1><span data-lang="en">Building <em>ThaiCue</em><br />in public.</span><span data-lang="zh">公开记录<br /><em>ThaiCue</em> 的成长。</span></h1>
     <div class="intro">
-      <p>I’m building a product for learning Thai through songs. This is where I keep the questions behind the features: what makes a learning tool useful, what makes someone return, and what AI changes—or does not change—about building a good product.</p>
+      <p><span data-lang="en">I’m building a product for learning Thai through songs. This is where I keep the questions behind the features: what makes a learning tool useful, what makes someone return, and what AI changes—or does not change—about building a good product.</span><span data-lang="zh">我正在做一个通过歌曲学习泰语的产品。这里记录功能背后的问题：怎样的学习工具真正有用，什么会让人愿意回来，以及人工智能改变了什么、又没有改变什么。</span></p>
       <div class="actions">
-        <a href="https://thai-song-learner.vercel.app/" target="_blank" rel="noreferrer">Try ThaiCue ↗</a>
-        <a href="https://github.com/Mercy811/thai-song-learner" target="_blank" rel="noreferrer">View source ↗</a>
+        <a href="https://thai-song-learner.vercel.app/" target="_blank" rel="noreferrer"><span data-lang="en">Try ThaiCue ↗</span><span data-lang="zh">体验 ThaiCue ↗</span></a>
+        <a href="https://github.com/Mercy811/thai-song-learner" target="_blank" rel="noreferrer"><span data-lang="en">View source ↗</span><span data-lang="zh">查看源码 ↗</span></a>
       </div>
     </div>
   </section>
 
   <section class="entries shell">
-    <div class="entries-head"><p class="eyebrow">Product notes</p><span>{String(notes.length).padStart(2, '0')} entries</span></div>
+    <div class="entries-head"><p class="eyebrow"><span data-lang="en">Product notes</span><span data-lang="zh">产品思考</span></p><span><span data-lang="en">{String(notes.length).padStart(2, '0')} entries</span><span data-lang="zh">{String(notes.length).padStart(2, '0')} 篇</span></span></div>
     {notes.map((note, index) => (
       <a class="entry" href={note.href}>
         <span class="number">{String(index + 1).padStart(2, '0')}</span>
-        <div><p class="eyebrow">{note.topic} · {note.readingTime}</p><h2>{note.title}</h2><p>{note.description}</p></div>
-        <span class="arrow">Read →</span>
+        <div><p class="eyebrow"><span data-lang="en">{note.topic} · {note.readingTime}</span><span data-lang="zh">{note.topicZh} · {note.readingTimeZh}</span></p><h2><span data-lang="en">{note.title}</span><span data-lang="zh">{note.titleZh}</span></h2><p><span data-lang="en">{note.description}</span><span data-lang="zh">{note.descriptionZh}</span></p></div>
+        <span class="arrow"><span data-lang="en">Read →</span><span data-lang="zh">阅读 →</span></span>
       </a>
     ))}
   </section>
 
   <aside class="how-it-grows shell">
-    <p class="eyebrow">A structure that can grow</p>
-    <p>Each idea lives as one short note inside this project. New notes automatically appear here, so the project can accumulate a history without turning the homepage into an endless list.</p>
+    <p class="eyebrow"><span data-lang="en">A structure that can grow</span><span data-lang="zh">一个可以持续生长的结构</span></p>
+    <p><span data-lang="en">Each idea lives as one short note inside this project. New notes automatically appear here, so the project can accumulate a history without turning the homepage into an endless list.</span><span data-lang="zh">每个想法都作为一篇短笔记放在这个项目中。新笔记会自动出现在这里，让项目能够积累自己的历史，同时不会把首页变成一张没有尽头的列表。</span></p>
   </aside>
 </Base>
 
 <style>
   .journal-hero { padding: 70px 0 90px; }
-  .back { display: inline-block; margin-bottom: 80px; color: var(--muted); font: 11px var(--mono); text-underline-offset: 5px; }
+  .hero-tools { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 80px; }
+  .back { color: var(--muted); font: 11px var(--mono); text-underline-offset: 5px; }
   h1 { margin: 18px 0 45px; font: 500 clamp(58px, 9vw, 112px)/.84 var(--serif); letter-spacing: -.06em; }
   h1 em { color: #1687c2; font-weight: 400; }
   .intro { display: grid; grid-template-columns: 1.3fr .7fr; gap: 70px; border-top: 1px solid var(--ink); padding-top: 28px; }

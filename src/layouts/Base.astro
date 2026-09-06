@@ -2,16 +2,22 @@
 interface Props {
   title?: string;
   description?: string;
+  titleZh?: string;
+  descriptionZh?: string;
 }
 
 const {
   title = 'Xinyi Ye — analytics, prototypes, and experiments',
   description = 'A working notebook of analytics engineering proofs of concept, product experiments, and side projects by Xinyi Ye.',
+  titleZh,
+  descriptionZh,
 } = Astro.props;
+
+const bilingual = Boolean(titleZh && descriptionZh);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-language="en" data-bilingual={bilingual ? 'true' : undefined} data-title-en={title} data-title-zh={titleZh} data-description-en={description} data-description-zh={descriptionZh}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -27,15 +33,15 @@ const {
     <header class="site-header shell">
       <a class="wordmark" href="/" aria-label="Xinyi Ye, home"><span>XY</span> Xinyi Ye</a>
       <nav aria-label="Primary navigation">
-        <a href="/#work">Work</a>
-        <a href="/#thoughts">Thoughts</a>
-        <a href="/#about">About</a>
+        <a href="/#work"><span data-lang="en">Work</span><span data-lang="zh">作品</span></a>
+        <a href="/#thoughts"><span data-lang="en">Thoughts</span><span data-lang="zh">思考</span></a>
+        <a href="/#about"><span data-lang="en">About</span><span data-lang="zh">关于</span></a>
         <a class="github-link" href="https://github.com/Mercy811" target="_blank" rel="noreferrer">GitHub ↗</a>
       </nav>
     </header>
     <main><slot /></main>
     <footer class="site-footer shell">
-      <p>Built as a living notebook, not a finished archive.</p>
+      <p><span data-lang="en">Built as a living notebook, not a finished archive.</span><span data-lang="zh">这是一本持续生长的笔记，而不是一份已经完成的档案。</span></p>
       <p>© {new Date().getFullYear()} Xinyi Ye</p>
     </footer>
   </body>
@@ -59,6 +65,8 @@ const {
   html { scroll-behavior: smooth; background: var(--paper); }
   body { margin: 0; color: var(--ink); font-family: var(--sans); line-height: 1.55; }
   a { color: inherit; }
+  html:not([data-language="zh"]) [data-lang="zh"],
+  html[data-language="zh"] [data-lang="en"] { display: none !important; }
   .shell { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
   .site-header { height: 84px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
   .wordmark { display: flex; gap: 11px; align-items: center; text-decoration: none; font-weight: 700; }
