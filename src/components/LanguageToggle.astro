@@ -13,6 +13,9 @@
       document.title = language === 'zh' ? root.dataset.titleZh : root.dataset.titleEn;
       const description = document.querySelector('meta[name="description"]');
       if (description) description.content = language === 'zh' ? root.dataset.descriptionZh : root.dataset.descriptionEn;
+      document.querySelectorAll('[data-title-en][data-title-zh]').forEach((element) => {
+        element.setAttribute('title', language === 'zh' ? element.dataset.titleZh : element.dataset.titleEn);
+      });
       buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.languageButton === language)));
     };
     buttons.forEach((button) => button.addEventListener('click', () => setLanguage(button.dataset.languageButton)));

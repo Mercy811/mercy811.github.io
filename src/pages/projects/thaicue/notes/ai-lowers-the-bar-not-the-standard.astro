@@ -17,6 +17,20 @@ export const note = {
 ---
 
 <ThaiCueNote frontmatter={note}>
+  <figure class="interview-video">
+    <div class="video-frame">
+      <iframe
+        src="https://www.youtube-nocookie.com/embed/GDeEATJcbJo?start=1219&end=1377&rel=0"
+        title="Duolingo CEO interview segment about building apps in 2026"
+        data-title-en="Duolingo CEO interview segment about building apps in 2026"
+        data-title-zh="多邻国首席执行官谈 2026 年开发应用的访谈片段"
+        loading="eager"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen></iframe>
+    </div>
+    <figcaption><span data-lang="en">Interview excerpt · 20:19–22:57</span><span data-lang="zh">访谈片段 · 20:19–22:57</span></figcaption>
+  </figure>
   <div data-lang="en">
     <p>Lately, I have been using AI to build ThaiCue—a website for learning Thai through songs.</p>
     <p>When Duolingo’s CEO answered the question, “If anyone can build an app in 2026, should Duolingo be worried?”, one idea resonated with me: <strong>AI can help far more people make an app, but building a genuinely good language-learning product remains extremely difficult.</strong></p>
@@ -36,7 +50,6 @@ export const note = {
     <p>AI enables one person to begin building a product, but it also raises expectations. Products should feel smarter, more capabilities should be free, and improvements should arrive faster. When platforms shift, today’s leader is not guaranteed to remain tomorrow’s winner.</p>
     <p>The worthwhile accumulation, then, is not the number of features I have shipped. It is whether I increasingly understand whom I am helping, which experiences genuinely support learning, and what makes someone want to return.</p>
     <p>Code is becoming easier to write. Understanding users, designing a learning experience, and making a product good over time remain difficult—and that is precisely why this is worth continuing.</p>
-    <p><a href="https://www.youtube.com/watch?v=GDeEATJcbJo&t=1219s">Watch the interview segment (20:19–22:57) →</a></p>
   </div>
   <div data-lang="zh">
     <p>最近，我一直在用人工智能做 ThaiCue——一个通过泰语歌曲学习泰语的网站。</p>
@@ -57,6 +70,13 @@ export const note = {
     <p>人工智能让一个人也能开始做产品，同时也抬高了用户的期待：产品应该更智能，更多能力应该免费，更新也应该更快。平台变化以后，今天的领先者未必仍然是明天的赢家。</p>
     <p>所以，真正值得积累的不是“我又做出了多少功能”，而是我是否越来越理解：我在为谁解决什么问题，什么体验真的帮助了学习，以及什么会让人愿意回来。</p>
     <p>代码越来越容易写。理解用户、设计学习体验、长期把产品做好，仍然很难——也正因为这样，这件事才值得继续做。</p>
-    <p><a href="https://www.youtube.com/watch?v=GDeEATJcbJo&t=1219s">观看访谈对应片段（20:19–22:57）→</a></p>
   </div>
 </ThaiCueNote>
+
+<style>
+  .interview-video { margin: 0 0 44px; }
+  .video-frame { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--ink); border-radius: 3px; box-shadow: 9px 9px 0 #8ed8ff; }
+  .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  figcaption { margin-top: 17px; color: var(--muted); font: 500 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+  @media (max-width: 600px) { .video-frame { box-shadow: 6px 6px 0 #8ed8ff; } }
+</style>
