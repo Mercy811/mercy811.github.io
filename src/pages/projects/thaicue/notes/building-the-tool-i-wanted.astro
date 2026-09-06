@@ -1,0 +1,42 @@
+---
+import ThaiCueNote from '../../../../layouts/ThaiCueNote.astro';
+
+export const note = {
+  title: 'Building the tool I wanted as a Thai learner',
+  titleZh: '做一个我自己想用的泰语学习工具',
+  description: 'Designing a path from hearing one lyric to understanding and singing it.',
+  descriptionZh: '设计一条从听见一句歌词，到理解它、唱出它的学习路径。',
+  date: 'September 2026',
+  dateZh: '2026 年 9 月',
+  topic: 'Learning experience',
+  topicZh: '学习体验',
+  readingTime: '5 min',
+  readingTimeZh: '阅读约 5 分钟',
+  order: 1,
+};
+---
+
+<ThaiCueNote frontmatter={note}>
+  <div data-lang="en">
+    <p>Songs are a wonderful reason to learn a language and a frustrating way to do it. A line moves past before I can separate the words. A translation gives me meaning but not sound. A dictionary gives me a word but removes it from the melody that made me care.</p>
+    <p>I built ThaiCue around a smaller promise: choose a song, then learn one line you can genuinely sing in five minutes.</p>
+    <h2>Keep the context connected</h2>
+    <p>The useful unit is not only the song, line, or word. It is the movement between them. The interface keeps Thai script, romanization, meaning, and pronunciation close enough that exploration does not become tab management.</p>
+    <p>Practice mode is for careful reading. KTV mode returns the words to their musical context. Vocabulary quizzes and frequency views reveal what repeats across songs, while memory lessons connect common words into stories.</p>
+    <h2>Motivation is part of the system</h2>
+    <p>Language tools often optimize an abstract curriculum. A favorite song supplies something equally important: the desire to come back. That changes the product question from “What should a beginner learn next?” to “How can this thing they already love carry more learning?”</p>
+    <p>The project is still an experiment. I am interested in how much vocabulary a small song library can unlock, where pronunciation support is most useful, and whether the path from listening to singing can feel playful without becoming shallow.</p>
+    <p><a href="https://thai-song-learner.vercel.app/">Try ThaiCue →</a></p>
+  </div>
+  <div data-lang="zh">
+    <p>歌曲是学习一门语言很美好的理由，却也是一种令人挫败的学习方式。我还没来得及分辨每个词，一句歌词就已经唱过去了；翻译告诉我意思，却没有声音；词典给我一个单词，却把它从最初打动我的旋律里拿走了。</p>
+    <p>我围绕一个更小的承诺做了 ThaiCue：选择一首歌，然后用五分钟真正学会一句你能唱出来的歌词。</p>
+    <h2>让语境保持连接</h2>
+    <p>真正有用的学习单位不只是整首歌、某一句或某个词，而是它们之间的来回移动。界面把泰文、罗马音、含义和发音放得足够近，让探索不至于变成在许多标签页之间反复切换。</p>
+    <p>练习模式适合仔细阅读；卡拉 OK 模式让文字回到音乐语境中；词汇测验和词频视图呈现不同歌曲里反复出现的内容；记忆课程则把常用词连接成故事。</p>
+    <h2>动力也是系统的一部分</h2>
+    <p>语言学习工具经常围绕一套抽象课程进行优化。喜欢的歌曲却提供了同样重要的东西：让人愿意再次回来。于是，产品问题不再只是“初学者下一步应该学什么？”，而是“怎样让他们已经喜欢的东西承载更多学习？”</p>
+    <p>这个项目仍然是一场实验。我想知道，一个不大的歌曲库能够解锁多少词汇；发音帮助在哪些时刻最有用；以及从听歌到能唱的过程，能否既有趣又不流于浅薄。</p>
+    <p><a href="https://thai-song-learner.vercel.app/">体验 ThaiCue →</a></p>
+  </div>
+</ThaiCueNote>
