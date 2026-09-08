@@ -10,6 +10,7 @@ const projects = [
     description: 'A Datadog-native pipeline that normalizes uncaught Browser SDK errors, groups repeated occurrences by stable identity, and alerts only when a genuinely new issue appears.',
     tags: ['Datadog', 'Error Tracking', 'Fingerprinting'],
     href: '/projects/datadog-error-tracking/',
+    demo: '/datadog-error-tracking-demo/',
     video: 'https://drive.google.com/file/d/1pVoG-3N0EU-xXZDky4ZJpeqXEpvvoXc3/view?usp=drive_link',
     tone: 'acid-violet',
     visual: 'fingerprint',
@@ -130,7 +131,7 @@ const projects = [
             <h3>{project.title}</h3>
             <p>{project.description}</p>
             <ul>{project.tags.map((tag) => <li>{tag}</li>)}</ul>
-            <div class="links"><a href={project.href}>Open project →</a>{project.video && <a href={project.video} target="_blank" rel="noreferrer">Demo video ↗</a>}{project.journal && <a href={project.journal}>Product notes →</a>}{project.source && <a href={project.source} target="_blank" rel="noreferrer">Source ↗</a>}</div>
+            <div class="links"><a href={project.href}>Open project →</a>{project.demo && <a href={project.demo}>Interactive demo →</a>}{project.video && <a href={project.video} target="_blank" rel="noreferrer">Demo video ↗</a>}{project.journal && <a href={project.journal}>Product notes →</a>}{project.source && <a href={project.source} target="_blank" rel="noreferrer">Source ↗</a>}</div>
           </div>
         </article>
       ))}
