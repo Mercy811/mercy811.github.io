@@ -4,6 +4,18 @@ import Base from '../layouts/Base.astro';
 const projects = [
   {
     number: '01',
+    type: 'Observability POC',
+    title: 'One fingerprint per underlying SDK problem',
+    subtitle: 'Grouping first. Notification last.',
+    description: 'A Datadog-native pipeline that normalizes uncaught Browser SDK errors, groups repeated occurrences by stable identity, and alerts only when a genuinely new issue appears.',
+    tags: ['Datadog', 'Error Tracking', 'Fingerprinting'],
+    href: '/projects/datadog-error-tracking/',
+    video: 'https://drive.google.com/file/d/1pVoG-3N0EU-xXZDky4ZJpeqXEpvvoXc3/view?usp=drive_link',
+    tone: 'acid-violet',
+    visual: 'fingerprint',
+  },
+  {
+    number: '02',
     type: 'Analytics POC',
     title: 'Earlier delayed-events exploration',
     subtitle: 'A useful prototype—with known semantic gaps.',
@@ -15,7 +27,7 @@ const projects = [
     visual: 'heartbeat',
   },
   {
-    number: '02',
+    number: '03',
     type: 'Analytics architecture',
     title: 'One page view. Completed later.',
     subtitle: 'Proposed Solution 3: active attention on the original event.',
@@ -27,7 +39,7 @@ const projects = [
     visual: 'segments',
   },
   {
-    number: '03',
+    number: '04',
     type: 'Analytics POC',
     title: 'AutoCapture beyond the light DOM',
     subtitle: 'What breaks in shadow trees—and how to recover the signal.',
@@ -39,7 +51,7 @@ const projects = [
     visual: 'shadow',
   },
   {
-    number: '04',
+    number: '05',
     type: 'Systems explainer',
     title: 'Mapping iOS mobile attribution',
     subtitle: 'A visual model of a deliberately opaque ecosystem.',
@@ -51,7 +63,7 @@ const projects = [
     visual: 'network',
   },
   {
-    number: '05',
+    number: '06',
     type: 'Side project',
     title: 'Learn Thai through the songs you love',
     subtitle: 'From passive listening to line-by-line practice.',
@@ -111,13 +123,14 @@ const projects = [
             {project.visual === 'network' && <div class="network"><i></i><i></i><i></i><i></i><span>install</span><span>ad</span><span>signal</span></div>}
             {project.visual === 'segments' && <div class="segments"><span>PAGE VIEWED · PENDING</span><i></i><b>HEARTBEAT</b><i></i><b>FINALIZE</b><i></i><strong>engaged_time: 11.9s</strong></div>}
             {project.visual === 'lyrics' && <div class="lyrics"><span>ชอบตัวเอง</span><span>chɔ̂ɔp dtua-eeng</span><span>I like myself</span><div class="sound-bars">▂▄▆█▆▃▅▇▅▂</div></div>}
+            {project.visual === 'fingerprint' && <div class="fingerprint"><span>RAW EVENTS</span><div class="event-dots"><i></i><i></i><i></i><i></i><i></i><i></i></div><b>same cause</b><strong>01 issue</strong><small>new fingerprint → Slack</small></div>}
           </div>
           <div class="project-copy">
             <p class="eyebrow">{project.subtitle}</p>
             <h3>{project.title}</h3>
             <p>{project.description}</p>
             <ul>{project.tags.map((tag) => <li>{tag}</li>)}</ul>
-            <div class="links"><a href={project.href} target="_blank" rel="noreferrer">Open project ↗</a>{project.journal && <a href={project.journal}>Product notes →</a>}{project.source && <a href={project.source} target="_blank" rel="noreferrer">Source ↗</a>}</div>
+            <div class="links"><a href={project.href}>Open project →</a>{project.video && <a href={project.video} target="_blank" rel="noreferrer">Demo video ↗</a>}{project.journal && <a href={project.journal}>Product notes →</a>}{project.source && <a href={project.source} target="_blank" rel="noreferrer">Source ↗</a>}</div>
           </div>
         </article>
       ))}
@@ -172,7 +185,7 @@ const projects = [
   .project { display: grid; grid-template-columns: 100px minmax(320px, .85fr) 1.15fr; gap: 40px; padding: 50px 0; border-bottom: 1px solid var(--line); }
   .project-meta { display: flex; flex-direction: column; gap: 8px; font: 10px var(--mono); color: var(--muted); text-transform: uppercase; }
   .project-visual { position: relative; min-height: 310px; overflow: hidden; border-radius: 2px; }
-  .lime { background: var(--acid); } .violet { background: var(--violet); } .orange { background: var(--orange); } .blue { background: #8ed8ff; } .pink { background: #ffb4cf; }
+  .lime { background: var(--acid); } .violet { background: var(--violet); } .orange { background: var(--orange); } .blue { background: #8ed8ff; } .pink { background: #ffb4cf; }.acid-violet{background:linear-gradient(135deg,var(--acid) 0 50%,var(--violet) 50%)}
   .project-copy { padding: 12px 0; }
   .project-copy h3 { font: 500 clamp(34px, 4vw, 54px)/1 var(--serif); letter-spacing: -.035em; margin: 14px 0 18px; max-width: 570px; }
   .project-copy > p:not(.eyebrow) { max-width: 600px; color: #4c544e; font-size: 16px; }
@@ -189,6 +202,7 @@ const projects = [
   .network i { position: absolute; width: 18px; height: 18px; background: var(--ink); border-radius: 50%; }.network i:nth-child(1){left:16%;top:24%}.network i:nth-child(2){right:16%;top:20%}.network i:nth-child(3){left:32%;bottom:18%}.network i:nth-child(4){right:25%;bottom:30%}.network:before,.network:after{content:'';position:absolute;left:18%;top:28%;width:68%;height:1px;background:var(--ink);transform:rotate(21deg);transform-origin:left}.network:after{transform:rotate(-18deg);top:72%}.network span{position:absolute;font:10px var(--mono);}.network span:nth-of-type(1){left:12%;top:14%}.network span:nth-of-type(2){right:13%;top:12%}.network span:nth-of-type(3){right:17%;bottom:18%}
   .lyrics { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }.lyrics span:first-child{font:500 36px var(--sans)}.lyrics span:nth-child(2){font:13px var(--mono);margin-top:10px}.lyrics span:nth-child(3){font:500 14px var(--serif);margin-top:8px}.sound-bars{position:absolute;bottom:24px;font:20px var(--mono);letter-spacing:4px}
   .segments { position:absolute; inset:24px; display:grid; grid-template-columns:1fr auto; align-items:center; font:11px var(--mono); }.segments span{grid-column:1/-1;border:2px solid var(--ink);padding:12px;background:#ffffff75}.segments i{height:2px;background:var(--ink)}.segments b{border:1px solid var(--ink);padding:8px}.segments strong{grid-column:1/-1;text-align:right;font-size:26px}
+  .fingerprint{position:absolute;inset:24px;font-family:var(--mono);color:var(--ink)}.fingerprint>span{font-size:10px}.event-dots{display:grid;grid-template-columns:repeat(3,17px);gap:12px;margin:35px 0}.event-dots i{width:17px;height:17px;border:2px solid var(--ink);border-radius:50%;background:var(--paper)}.fingerprint b{display:block;font-size:11px;border-top:2px solid var(--ink);padding-top:13px;width:130px}.fingerprint strong{position:absolute;right:12px;top:92px;font:500 42px var(--serif);color:white}.fingerprint small{position:absolute;right:12px;bottom:8px;background:var(--ink);color:var(--acid);padding:7px 9px;font-size:9px}
   .thoughts { padding-bottom: 90px; }
   .note-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
   .note-grid a { padding: 42px 38px; background: var(--paper); text-decoration: none; }
