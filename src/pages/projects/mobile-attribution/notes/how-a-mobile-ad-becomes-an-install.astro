@@ -1,0 +1,264 @@
+---
+import BilingualNote from '../../../../layouts/BilingualNote.astro';
+
+export const note = {
+  title: 'How a mobile ad becomes an install',
+  titleZh: '一次手机广告，怎样变成一次安装',
+  description: 'I follow one Instagram tap through the App Store, an MMP, and Amplitude, and I stop where the public documentation stops.',
+  descriptionZh: '我顺着一次 Instagram 点击，走过 App Store、MMP 和 Amplitude，并停在公开文档停下来的地方。',
+  date: 'November 2026',
+  dateZh: '2026 年 11 月',
+  published: '2026-11-10',
+  project: 'Mobile Attribution',
+  projectZh: '移动归因',
+  topic: 'Mobile attribution',
+  topicZh: '移动归因',
+  readingTime: '16 min',
+  readingTimeZh: '阅读约 16 分钟',
+  order: 1,
+};
+---
+
+<BilingualNote frontmatter={note}>
+  <div data-lang="en">
+    <p>I work on browser analytics. On the web, a click and the page it opens share a navigation. I can look at the URL. Mobile ads do not work that way, and the explanations I found kept replacing one unfamiliar word with another. This is the account I can defend from public documentation. I checked those pages on 10 November 2026.</p>
+    <p>Alex is a person I invented, with their own iPhone. Cosmere is an app I invented. Campaign 456 is a campaign number I invented. Where I need a real company’s behavior, I use AppsFlyer as the example of a mobile measurement partner, because AppsFlyer and Amplitude both publish the integration. I do not claim that Adjust, Branch, or anyone else uses the same screens or the same forwarding rules.</p>
+  </div>
+  <div data-lang="zh">
+    <p>我做的是浏览器里的分析。在网页上，一次点击和它打开的页面属于同一次跳转，我可以看着那条 URL。手机广告不是这样。我读到的解释，常常是用一个陌生的词去替换另一个陌生的词。下面是我能用公开文档撑住的版本。这些页面是我在 2026 年 11 月 10 日核对的。</p>
+    <p>Alex 是我虚构的人，用的是自己的 iPhone。Cosmere 是我虚构的应用。广告系列 456 是我虚构的编号。需要举一家真实公司时，我用 AppsFlyer 作为移动监测合作伙伴的例子，因为 AppsFlyer 和 Amplitude 都公开写了这条集成。我没有说 Adjust、Branch 或其他公司使用同样的界面或同样的转发规则。</p>
+  </div>
+
+  <div data-lang="en">
+    <h2>After the install, where did campaign 456 go?</h2>
+    <p>Alex opens Instagram and sees an ad for Cosmere. The ad belongs to Meta campaign 456. Alex taps it, lands on Cosmere’s page in the App Store, installs, and opens Cosmere for the first time. The Cosmere developer embedded two pieces of code: an MMP SDK, and a separate Amplitude SDK.</p>
+    <p>The sentence people want at the end is “this Cosmere install is campaign 456.” That sentence has to be split. It might be true inside the MMP, for this app install, under one specific path. It is not a statement that anyone learned Alex’s name. It is not automatically true inside Amplitude. And on some paths the result is only a delayed, aggregated count, or no match at all.</p>
+  </div>
+  <div data-lang="zh">
+    <h2>装完以后，广告系列 456 去了哪里？</h2>
+    <p>Alex 打开 Instagram，看到一条 Cosmere 广告。这条广告属于 Meta 的广告系列 456。Alex 点下去，来到 App Store 里的 Cosmere 页面，安装，然后第一次打开 Cosmere。Cosmere 的开发者在应用里放了两段代码：一段 MMP SDK，另一段是单独的 Amplitude SDK。</p>
+    <p>大家想听到的结尾是“这次 Cosmere 安装就是广告系列 456”。这句话必须拆开。它也许在 MMP 内部、对这一次应用安装、在某一条特定路径上成立。它不是“有人知道了 Alex 的名字”。它也不会自动在 Amplitude 里成立。还有一些路径只给出延迟的汇总数字，或者根本对不上。</p>
+  </div>
+
+  <div data-lang="en">
+    <h2>Who is actually in the room</h2>
+    <p>An MMP, a mobile measurement partner, is a company an app developer hires to decide which ads to credit for installs and later in-app actions. AppsFlyer is one. The MMP SDK is that company’s code inside Cosmere. The MMP backend is that company’s servers. Matching is a job those servers do. The attribution result is data the MMP backend produces and, sometimes, sends onward. It is not another company.</p>
+    <p>Meta is the ad platform in this story. Instagram is Meta’s app on the phone. Meta’s backend is off the phone. Those are the same owner, which is why they share a color on the map.</p>
+    <p>The App Store client is Apple’s store app on the phone. It shows a product page and installs an app. Apple’s attribution service, AdAttributionKit and the older SKAdNetwork, is a different thing. It sits off the phone and produces a privacy-preserving postback. I drew it separately so it would not look like the store app was secretly passing campaign 456 into the binary.</p>
+    <p>The Amplitude SDK is also inside Cosmere, and it has a different owner. It sends product events, such as “the app opened,” to Amplitude’s backend. Amplitude’s attribution endpoint is only a network door. It receives a message. It does not watch Instagram.</p>
+  </div>
+  <div data-lang="zh">
+    <h2>房间里到底有谁</h2>
+    <p>MMP，也就是移动监测合作伙伴，是应用开发者请来判断“哪条广告该记上这次安装、以及之后的应用内行为”的公司。AppsFlyer 是其中一家。MMP SDK 是这家公司放在 Cosmere 里的代码。MMP 后端是这家公司的服务器。匹配是这些服务器做的一项工作。归因结果是 MMP 后端产生、有时再转发出去的数据。它不是另一家公司。</p>
+    <p>在这个故事里，Meta 是广告平台。Instagram 是 Meta 装在手机上的应用。Meta 后端在手机之外。它们是同一个所有者，所以在图上用同一种颜色。</p>
+    <p>App Store 客户端是手机上的 Apple 商店应用。它展示产品页并安装应用。Apple 的归因服务，也就是 AdAttributionKit 和更早的 SKAdNetwork，是另一件事。它在手机之外，生成一份保护隐私的回传。我把它单独画出来，免得看起来像商店应用偷偷把广告系列 456 塞进了安装包。</p>
+    <p>Amplitude SDK 也在 Cosmere 里面，但所有者不同。它把产品事件，例如“应用被打开了”，发给 Amplitude 后端。Amplitude 的归因接口只是一扇网络上的门。它接收一条消息。它并不看着 Instagram。</p>
+  </div>
+
+  <figure class="viz">
+    <iframe
+      data-lang-frame
+      sandbox="allow-scripts"
+      referrerpolicy="no-referrer"
+      src="/mobile-attribution/index.html?lang=en"
+      data-src-en="/mobile-attribution/index.html?lang=en"
+      data-src-zh="/mobile-attribution/index.html?lang=zh"
+      title="Map of where campaign 456 can travel on one iPhone"
+      data-title-en="Map of where campaign 456 can travel on one iPhone"
+      data-title-zh="广告系列 456 在一部 iPhone 上可能经过的地方"></iframe>
+    <figcaption>
+      <span data-lang="en">Teaching map. Click a box or a line. <a href="/mobile-attribution/index.html?lang=en">Open it on its own ↗</a></span>
+      <span data-lang="zh">教学图。点击方块或连线。<a href="/mobile-attribution/index.html?lang=zh">单独打开 ↗</a></span>
+    </figcaption>
+  </figure>
+
+  <div data-lang="en">
+    <h2>The one path where a device identifier can match</h2>
+    <p>I am going to walk the path that can tie a tap to one app install. It only works when both Instagram and Cosmere are allowed to read the device’s advertising identifier. On iOS 14.5 and later, that permission is App Tracking Transparency, and it is asked per app. If either app is refused, that app gets all zeros and is not allowed to track. There is nothing to compare.</p>
+    <p>Alex taps the ad. Meta’s backend can record the interaction: which campaign, when, and the advertising identifier if Instagram was allowed to read it. AppsFlyer says a self-reporting network such as Meta does not use an attribution link generated by the advertiser. So I will not claim this tap had to pass through an AppsFlyer redirect. Meta can record it directly.</p>
+    <p>The App Store client then shows Cosmere’s page and installs the standard app. Everyone gets that binary. Campaign 456 is not written into it, and the store does not hand the new app a bag of ad-link parameters. Installing is also not the same event as opening. AppsFlyer dates its own “install” at the first launch. The store’s download time is earlier. Until Cosmere runs, the MMP SDK and the Amplitude SDK are silent.</p>
+    <p>Alex opens Cosmere. The MMP SDK reads what iOS allows this app to read and sends that to the MMP backend, together with an identifier the SDK created for this install of Cosmere. For Meta, AppsFlyer documents the next step in a specific direction: if a device identifier is available and tracking permission was granted, the MMP asks Meta whether Meta claims this install. Meta can answer yes and include campaign details. That answer is how campaign 456 can become attached to this install inside the MMP. It is Meta confirming its own record, not the phone announcing Alex’s name.</p>
+    <p>Separately, the Amplitude SDK sends product events to Amplitude. A configured integration may also make the MMP backend send an attribution message to Amplitude. I will come back to why that message, for Meta, may not contain campaign 456.</p>
+  </div>
+  <div data-lang="zh">
+    <h2>唯一有可能用设备标识对上的那条路</h2>
+    <p>我先走那条有可能把一次点击和一次应用安装对上的路。它只有在 Instagram 和 Cosmere 都被允许读取这台设备的广告标识符时才成立。iOS 14.5 及之后，这个许可叫应用跟踪透明度，而且是按应用询问的。任何一边被拒绝，那个应用读到的就是全零，并且不允许再做这种跟踪。两边就没有可以比较的值。</p>
+    <p>Alex 点下广告。Meta 后端可以记下这次互动：哪个广告系列、什么时间，以及在 Instagram 被允许读取时的广告标识符。AppsFlyer 写明，Meta 这种自报告广告网络不使用广告主生成的归因链接。所以我不会说这次点击必须先跳进 AppsFlyer。Meta 可以直接记下它。</p>
+    <p>然后 App Store 客户端展示 Cosmere 的页面，并安装那份标准应用。每个人拿到的都是这份安装包。广告系列 456 没有写进去，商店也不会把一包广告链接参数交给刚装好的应用。安装也不是打开。AppsFlyer 把自己的“安装”时间记在第一次打开。商店的下载时间更早。在 Cosmere 运行之前，MMP SDK 和 Amplitude SDK 都是沉默的。</p>
+    <p>Alex 打开 Cosmere。MMP SDK 读取 iOS 允许这个应用读取的内容，连同它为这一次 Cosmere 安装生成的编号，一起发给 MMP 后端。对 Meta，AppsFlyer 把下一步写成了明确的方向：如果设备标识可用，并且跟踪许可已经给出，MMP 就去问 Meta 是否认领这次安装。Meta 可以回答“是”，并带上广告系列信息。广告系列 456 就是这样才可能在 MMP 内部挂到这次安装上。这是 Meta 在确认自己的记录，不是手机在通报 Alex 的名字。</p>
+    <p>与此同时，Amplitude SDK 把产品事件发给 Amplitude。如果客户打开了集成，MMP 后端也可能再发一条归因消息给 Amplitude。为什么这条消息在 Meta 这条路上可能并不包含广告系列 456，我放到后面说。</p>
+  </div>
+
+  <div data-lang="en">
+    <h2>What each value can prove</h2>
+    <p>None of these is “device information.” Each one has an owner.</p>
+    <h3>Campaign 456</h3>
+    <p>Meta, or the advertiser, names a group of ads. Meta stores that name with the ad. It proves which campaign an ad belonged to. It does not prove that a particular phone tapped it, and Cosmere cannot read it out of the installed app.</p>
+    <h3>A click identifier</h3>
+    <p>This is a value the ad platform creates for one interaction, so that interaction can be referred to later. It is not the campaign, and it is not a property of the phone. On a non-self-reporting network, AppsFlyer says the click can arrive on an attribution link. On Meta’s self-reporting path, the advertiser does not supply that link. I have not confirmed Meta’s current field name, so the object below is a teaching example, not a vendor schema.</p>
+    <pre><code>{`{ "campaign": "456", "click": "click_9f3", "app": "Cosmere" }`}</code></pre>
+    <p>The App Store install does not return this object to Cosmere. The MMP SDK cannot reconstruct a click identifier it never received.</p>
+    <h3>IDFA, the advertising identifier</h3>
+    <p>Apple’s privacy documentation calls it the device’s advertising identifier. An app on iOS 14.5 or later receives a usable value only after that app shows the tracking prompt and the person allows it. Otherwise the value is all zeros, and tracking is not allowed. Instagram’s permission does not grant Cosmere’s permission. Both sides have to actually hold a non-zero value before anyone can compare them. What the comparison proves is narrow: these two reads, made by two apps that were each allowed to read the advertising identifier, line up. It does not prove the person’s name, and it does not happen when either prompt was denied.</p>
+    <h3>IDFV, the identifier for vendor</h3>
+    <p>Apple says this identifier may be used for analytics across apps from the same content provider, without the tracking prompt. It may not be combined with other data to track a person across apps and websites owned by other companies. Instagram and Cosmere are different providers, so Cosmere’s IDFV is not a key Meta stored at click time. It is useful later, because the MMP and Amplitude can both see the same Cosmere install. It cannot answer “was this the phone that tapped the ad in Instagram?”</p>
+    <h3>The MMP’s own id for this install</h3>
+    <p>AppsFlyer calls this the AppsFlyer ID. The SDK creates it for this install of this app. AppsFlyer says an iCloud restore of the app keeps that id and the attribution already stored with it. The id did not exist inside Instagram when Alex tapped. It can tie later Cosmere events to this install inside the MMP. It cannot be the value that matches the tap.</p>
+    <h3>IP address, clock time, and device model</h3>
+    <p>These describe a moment and a kind of phone. They are not unique, and they are not a person. Apple’s license rules forbid deriving a unique device from device properties, including the device configuration and the network connection. AdAttributionKit’s own questions page says it may not be combined with fingerprinting. AppsFlyer’s current description of probabilistic modeling, updated 12 August 2026, says the output is an aggregate campaign report, not an identification of a device or a user. I am not going to treat these fields as a way to decide that this install is Alex.</p>
+  </div>
+  <div data-lang="zh">
+    <h2>每个值到底能证明什么</h2>
+    <p>这些都不是笼统的“设备信息”。每一个都有自己的所有者。</p>
+    <h3>广告系列 456</h3>
+    <p>Meta 或广告主给一组广告起的名字。Meta 把它和广告存在一起。它证明的是这条广告属于哪个广告系列。它不能证明某台手机点过它，Cosmere 也不能从已经装好的应用里把它读出来。</p>
+    <h3>点击标识</h3>
+    <p>这是广告平台为一次互动生成的值，方便以后指认这一次互动。它不是广告系列，也不是手机的属性。对非自报告的广告网络，AppsFlyer 说点击可以出现在一条归因链接上。在 Meta 的自报告路径上，广告主并不提供那条链接。我没有核实 Meta 现在的字段名，所以下面的对象只是教学例子，不是哪家厂商的接口。</p>
+    <pre><code>{`{ "campaign": "456", "click": "click_9f3", "app": "Cosmere" }`}</code></pre>
+    <p>App Store 的安装不会把这个对象交回给 Cosmere。MMP SDK 也无法还原一个自己从未收到的点击标识。</p>
+    <h3>IDFA，广告标识符</h3>
+    <p>Apple 的隐私文档把它叫做这台设备的广告标识符。在 iOS 14.5 或更新版本上，应用只有展示了跟踪提示、并且这个人允许之后，才能拿到可用的值。否则值是全零，并且不允许跟踪。Instagram 获得许可，不等于 Cosmere 获得许可。两边都真正拿着一个非零的值，才有东西可以比较。比较所能证明的范围很窄：两个各自获准读取广告标识符的应用，读到的值对得上。它不能证明这个人的名字。任何一边拒绝了提示，这件事就不会发生。</p>
+    <h3>IDFV，供应商标识符</h3>
+    <p>Apple 说这个标识可以用于同一内容提供者自己的应用分析，不需要跟踪提示。它不能和其他数据拼在一起，去跟踪其他公司拥有的应用和网站。Instagram 和 Cosmere 是不同的提供者，所以 Cosmere 的 IDFV 不是 Meta 在点击时存下的那把钥匙。它的用处在后面：MMP 和 Amplitude 可以一起看见同一次 Cosmere 安装。它回答不了“这是不是刚才在 Instagram 里点下广告的那台手机？”</p>
+    <h3>MMP 为这次安装生成的编号</h3>
+    <p>AppsFlyer 把它叫做 AppsFlyer ID。SDK 为这个应用的这一次安装创建它。AppsFlyer 写明，从 iCloud 恢复这个应用时，这个编号以及已经存下的归因会保留。Alex 点击的那一刻，Instagram 里还不存在这个编号。它可以在 MMP 内部把后来的 Cosmere 事件系到这次安装上。它不能用来对上那次点击。</p>
+    <h3>IP 地址、时间和机型</h3>
+    <p>它们描述的是一个时刻和一种手机。它们不是唯一的，也不是一个人。Apple 的许可协议禁止从设备属性推导出一台唯一设备，例子里包括设备配置和网络连接。AdAttributionKit 自己的问答页写明，不能把它和指纹识别一起用。AppsFlyer 对概率模型的现行说明更新于 2026 年 8 月 12 日，输出的是广告系列层面的汇总报告，不是对某台设备或某个用户的指认。我不会把这些字段当成“因此这次安装就是 Alex”的方法。</p>
+  </div>
+
+  <div data-lang="en">
+    <h2>iOS has more than one path</h2>
+    <p>The identifier match above is one path. It is not the path.</p>
+    <p><strong>Self-reporting networks.</strong> AppsFlyer lists Meta ads, Snapchat, and Google Ads as networks that confirm attribution through an API, instead of through the advertiser’s click link. The documented direction is: on first launch the MMP queries the network, and the network answers. Meta also self-attributes even when another network touched the same person, while AppsFlyer credits the last click. Meta may connect a click and an install across devices. AppsFlyer attributes one device. Their lookback windows differ unless someone sets them to match. Two dashboards can disagree without either one “losing” the tap.</p>
+    <p><strong>AdAttributionKit.</strong> This is Apple’s privacy-preserving measurement, built on SKAdNetwork. It does not need the tracking prompt, because it does not identify a person or a device across companies. A click that leads to the product page can count if the app is installed within 30 days. A view can count, from iOS 17.4, if the install happens within 24 hours. Apple attributes the install when the person launches the app: the most recently tapped ad wins, otherwise the most recently viewed one. The postback arrives 24 to 48 hours after that launch, not during the tap. A winning postback can include the advertised app’s id, whether it was a redownload, a source identifier the ad network supplied for the campaign, and, only when a privacy threshold is met, the publisher app and a conversion value. More postbacks can follow if conversion values are updated. On iOS 18, a tap that reopens or redownloads an app can produce up to three. Apple describes the postback as a signed signal from Apple, sent to the registered ad network and, if the developer opts in, to the developer. I did not find a page that says the MMP is the default recipient. Nothing in the postback is Alex.</p>
+    <p><strong>Deep links are a different job.</strong> AppsFlyer’s “deep link” method is for someone who is not sent to the store. The URL is still there when the app opens, so the click and the open can be connected directly. A first install through the App Store does not work that way. The new app does not receive the original URL as its launch parameters. Deferred deep linking is the extra product feature that tries to recover context, such as which screen to show, after that install. Apple says a third-party deferred-deep-link tool needs the tracking prompt when it passes a unique identifier or builds a shared identity across companies for ad measurement. Getting the person to the right screen is not the same result as “campaign 456,” and it fails under the same permission limits when it depends on a shared identifier.</p>
+  </div>
+  <div data-lang="zh">
+    <h2>iOS 不止一条路</h2>
+    <p>上面的标识符匹配只是一条路。它不是唯一的路。</p>
+    <p><strong>自报告广告网络。</strong> AppsFlyer 把 Meta ads、Snapchat 和 Google Ads 列为通过接口确认归因的网络，而不是通过广告主的点击链接。写明的方向是：应用第一次打开时，MMP 询问广告网络，广告网络作答。Meta 还会在其他网络也接触过这个人时，仍然把安装算给自己；AppsFlyer 则把功劳记给最后一次点击。Meta 可能把不同设备上的点击和安装连起来。AppsFlyer 只归因一台设备。两边的回溯窗口如果不特意设成一样，也会不同。两个后台数字不一致，并不等于有一方把那次点击弄丢了。</p>
+    <p><strong>AdAttributionKit。</strong> 这是 Apple 在 SKAdNetwork 之上做的、保护隐私的衡量。它不需要跟踪提示，因为它并不跨公司认出一个人或一台设备。点进产品页的点击，如果 30 天内安装，可以计入。从 iOS 17.4 起，一次观看如果在 24 小时内发生安装，也可以计入。Apple 在这个人打开应用时做归因：最近一次点击的广告优先，否则算最近一次观看。回传是在那次打开之后的 24 到 48 小时才到，不是在点击的当下。一条胜出的回传可以包含被广告应用的编号、是不是重新下载、广告网络提供的广告系列来源标识；只有在达到隐私门槛时，才会包含发布广告的应用和转化值。转化值如果继续更新，后面还可能有更多回传。在 iOS 18 上，一次用来重新打开或重新下载应用的点击，最多可以产生三条。Apple 把回传描述成来自 Apple 的签名信号，发给已注册的广告网络；如果开发者选择接收，也会发给开发者。我没有找到一页写着 MMP 是默认接收者。回传里没有 Alex。</p>
+    <p><strong>深链是另一件工作。</strong> AppsFlyer 的“深链”方法针对的是没有被送去商店的人。应用打开时 URL 还在，所以点击和打开可以直接连上。通过 App Store 的第一次安装不是这样。新应用不会把原来的 URL 当作启动参数收到。延迟深链是另一项产品能力，想在安装之后找回上下文，比如该打开哪个画面。Apple 写明，如果第三方延迟深链工具传递唯一标识，或为了广告衡量在不同公司的应用之间建立同一个身份，就需要跟踪提示。把人带到对的画面，和“广告系列 456”不是同一个结果。只要它依赖一个共享标识，它就会受到同样的许可限制。</p>
+  </div>
+
+  <div data-lang="en">
+    <h2>What Amplitude actually receives</h2>
+    <p>Amplitude’s public Attribution API is a <code>POST</code> to <code>https://api.amplitude.com/attribution</code>. Projects in the EU data center use <code>https://api.eu.amplitude.com/attribution</code>. The request carries the project API key and one event. The documented iOS event needs a platform, an event name, and at least one of <code>idfa</code> or <code>idfv</code>. Campaign details travel as user properties. One Android sample on that same page uses <code>api2.amplitude.com</code> instead. I am flagging that rather than picking a host the page does not reconcile.</p>
+    <p>The page says the sender is a mobile measurement partner or a marketing platform. It does not say the Amplitude SDK sends this message, and it does not say Meta or Google Ads post to it directly. AppsFlyer publishes two integrations, and says to enable only one: the Attribution API for install data, or the HTTP V2 API for install and in-app data. Using both can create duplicate events. Amplitude’s setup page points at AppsFlyer’s help center for the exact screens. The API itself requires the project’s API key. I did not retrieve an English AppsFlyer page that shows the form field, so I will not invent the menu path.</p>
+    <p>Joining is not magic. Amplitude matches the attribution event to a product event that carries the same advertising identifier, or the same vendor identifier: IDFA or IDFV on iOS, the Google advertising id or App Set ID on Android. The iOS SDK can collect IDFV without the tracking prompt. IDFA still needs Apple’s permission. If COPPA control is enabled, AppsFlyer says IDFV is turned off together with IDFA, and then there is no identifier left to match. When no matching product event exists, Amplitude holds the attribution event for up to 72 hours and then drops it. Amplitude also strips the advertising identifier before it stores the event.</p>
+    <p>For this story there is a sharper limit. AppsFlyer’s page on third-party postbacks, which names Amplitude, says Meta ads are redacted. If the advertiser has not accepted Meta’s Advanced Mobile Measurement terms, AppsFlyer sends a postback only for installs attributed by an install referrer, and that postback does not include attribution data. If the terms were accepted, postbacks go out for every method, but still without attribution data: AppsFlyer says they are sent as unattributed, which it also calls organic. So the MMP can know about campaign 456 while the message Amplitude is allowed to keep does not say Meta, and does not say 456.</p>
+    <p>AppsFlyer also warns that its own word “organic” is loose. In AppsFlyer’s model, organic means “we did not attribute this install to a media source,” including an install that fell outside a lookback window. It does not mean “we know Alex never saw an ad.” A redacted Meta postback can land in that same bucket downstream.</p>
+  </div>
+  <div data-lang="zh">
+    <h2>Amplitude 实际收到的是什么</h2>
+    <p>Amplitude 公开的归因接口是向 <code>https://api.amplitude.com/attribution</code> 发一个 <code>POST</code>。欧盟数据中心的项目用 <code>https://api.eu.amplitude.com/attribution</code>。请求里带着项目的 API key 和一条事件。文档中的 iOS 事件需要平台、事件名，以及 <code>idfa</code> 或 <code>idfv</code> 里的至少一个。广告系列细节放在用户属性里。同一页上有一个 Android 示例改用了 <code>api2.amplitude.com</code>。页面没有把这两个主机说圆，我把它记为未核对清楚，而不是替它选一个。</p>
+    <p>这一页写的发送者是移动监测合作伙伴或营销平台。它没有写 Amplitude SDK 发送这条消息，也没有写 Meta 或 Google Ads 直接发到这里。AppsFlyer 公开了两种集成，并要求只打开一种：用归因接口发送安装数据，或用 HTTP V2 接口发送安装和应用内数据。两种同时开，可能产生重复事件。Amplitude 的设置页把具体的界面步骤指到 AppsFlyer 的帮助中心。接口本身需要项目的 API key。我没有检索到一份英文的 AppsFlyer 页面来展示那个表单字段，所以我不编菜单路径。</p>
+    <p>拼接不是魔法。Amplitude 用同一个广告标识或同一个供应商标识，把归因事件和产品事件对上：iOS 上是 IDFA 或 IDFV，Android 上是 Google 广告标识或 App Set ID。iOS SDK 可以在没有跟踪提示的情况下收集 IDFV。IDFA 仍然需要 Apple 的许可。如果打开了 COPPA 控制，AppsFlyer 写明 IDFV 会和 IDFA 一起被关掉，那就没有剩下的标识可以匹配。如果还没有对得上的产品事件，Amplitude 会把归因事件保留最多 72 小时，然后丢掉。Amplitude 在保存事件之前还会去掉广告标识符。</p>
+    <p>对这个故事，还有一条更硬的限制。AppsFlyer 关于转发给第三方的页面点名了 Amplitude，并写明 Meta 广告会被涂掉。如果广告主没有接受 Meta 的 Advanced Mobile Measurement 条款，AppsFlyer 只为“由安装引荐来源归因”的安装发送回传，而且回传里没有归因数据。如果接受了条款，各种方法的回传都会发出，但仍然没有归因数据：AppsFlyer 说它们是作为未归因发出的，它也把这叫做自然量。所以 MMP 可以知道广告系列 456，而 Amplitude 被允许留下的那条消息可以既不说 Meta，也不说 456。</p>
+    <p>AppsFlyer 还提醒过，它自己说的“自然量”是松的。在 AppsFlyer 的模型里，自然量的意思是“我们没有把这次安装归因到某个媒体来源”，也包括落在回溯窗口之外的安装。它不是“我们知道 Alex 没看过广告”。一条被涂掉的 Meta 回传，在下游会掉进同一个桶。</p>
+  </div>
+
+  <div data-lang="en">
+    <h2>Android, briefly, because the store helps</h2>
+    <p>The iOS App Store does not have this mechanism. Google Play does.</p>
+    <p>A Play listing URL can carry the app’s package name and a referrer string, the extra text the link wants the install to remember. The Play Store app on the device stores that referrer for the package that was installed. Cosmere’s SDK later connects to the Play Store app and calls the Install Referrer API. The request includes the calling package name, which the API uses to disambiguate. The response is that package’s referrer, plus when the click and the install began. The client library reads what the Play Store app already stored. It does not make a network call. The value lasts 90 days and does not change unless the app is reinstalled.</p>
+    <p>So Play is not choosing a campaign for a random SDK, and it is not looking Alex up by name. It returns the referrer it stored for this package, and that string contains whatever the listing link actually carried. AppsFlyer treats this referrer as the primary Android method. It also documents a separate Meta path on Android that reads campaign metadata from local storage. Neither one exists on the iOS App Store.</p>
+  </div>
+  <div data-lang="zh">
+    <h2>Android 只有短短一节，因为商店帮了忙</h2>
+    <p>iOS 的 App Store 没有这个机制。Google Play 有。</p>
+    <p>Play 的商品页 URL 可以带上应用的包名，以及一段引荐字符串，也就是链接希望这次安装记住的附加文字。设备上的 Play 商店应用会把这段引荐来源存给被安装的那个包。之后 Cosmere 的 SDK 连接到 Play 商店应用，调用 Install Referrer API。请求里带有调用方的包名，接口用它来区分是哪一个应用。返回的是这个包的引荐来源，以及点击和安装开始的时间。客户端库读取的是 Play 商店应用已经存好的数据，不再发起网络请求。这个值保留 90 天，除非应用被重新安装，否则不会变。</p>
+    <p>所以 Play 不是在给一个随便的 SDK 分配广告系列，也不是按 Alex 的名字去查。它返回的是自己为这个包存下的引荐来源，字符串里有什么，取决于商品页链接实际带了什么。AppsFlyer 把这种引荐来源当作 Android 上的主要方法。它还写了 Android 上另一条 Meta 路径：从本地存储读取广告系列元数据。这两条在 iOS 的 App Store 上都不存在。</p>
+  </div>
+
+  <div data-lang="en">
+    <h2>Mistakes I had to unlearn</h2>
+    <ul>
+      <li>The App Store does not stamp campaign 456 into Cosmere.</li>
+      <li>Install and first open are different events. The MMP usually cannot speak until the first open.</li>
+      <li>Not every Instagram tap is an MMP redirect. Meta is documented as a self-reporting network.</li>
+      <li>IDFV is not a cross-company device id. The MMP’s own install id did not exist at click time.</li>
+      <li>An unmatched install is not automatically organic. “Organic” in AppsFlyer means “not attributed to a media source,” and a redacted forward can look the same downstream.</li>
+      <li>The Amplitude attribution endpoint does not know the ad source. It knows the message it was sent, and only if an identifier joins that message to a product event in time.</li>
+    </ul>
+    <p>The careful ending is smaller than the slogan. On the identifier path, the MMP can end up with this Cosmere install associated with Meta campaign 456, without knowing that the person is Alex. Apple’s aggregated path can credit a campaign without a person. And Amplitude, on AppsFlyer’s published Meta rules, may never be allowed to store that campaign on the event it receives.</p>
+  </div>
+  <div data-lang="zh">
+    <h2>我不得不改掉的误解</h2>
+    <ul>
+      <li>App Store 不会把广告系列 456 盖进 Cosmere。</li>
+      <li>安装和第一次打开是两件事。MMP 通常要到第一次打开才说得了话。</li>
+      <li>不是每一次 Instagram 点击都要经过 MMP 跳转。Meta 在文档里是自报告广告网络。</li>
+      <li>IDFV 不是跨公司的设备标识。MMP 为自己的安装生成的编号，在点击时还不存在。</li>
+      <li>对不上的安装不会自动变成自然量。AppsFlyer 里的“自然量”是“没有归因到某个媒体来源”，而被涂掉的转发在下游看起来可以一样。</li>
+      <li>Amplitude 的归因接口并不知道广告来源。它只知道自己收到的那条消息，而且只有在标识及时把这条消息和一条产品事件对上时才知道。</li>
+    </ul>
+    <p>谨慎的结尾比口号小。在标识符那条路上，MMP 可以让这次 Cosmere 安装和 Meta 广告系列 456 发生关联，同时仍然不知道这个人是 Alex。Apple 的汇总路径可以记上一个广告系列，但没有这个人。而按照 AppsFlyer 已公开的 Meta 规则，Amplitude 收到的事件上，可能始终不被允许保存那个广告系列。</p>
+  </div>
+
+  <div data-lang="en">
+    <h2>Sources</h2>
+    <p>Checked 10 November 2026.</p>
+    <ul>
+      <li><a href="https://developer.apple.com/app-store/user-privacy-and-data-use/">User privacy and data use</a>, Apple. ATT, the advertising identifier, IDFV, fingerprinting, and deferred deep linking.</li>
+      <li><a href="https://developer.apple.com/app-store/ad-attribution/">Measuring ad performance with AdAttributionKit</a>, Apple. Postbacks, windows, conditional fields, and the fingerprinting ban.</li>
+      <li><a href="https://developer.apple.com/documentation/adattributionkit">AdAttributionKit</a>, Apple. Who participates, and that postbacks go to the ad network and an opted-in developer.</li>
+      <li><a href="https://support.appsflyer.com/hc/en-us/articles/207447053-AppsFlyer-attribution-model">AppsFlyer attribution model</a>. First launch versus download, self-reporting networks, referrers, and what “organic” means there.</li>
+      <li><a href="https://support.appsflyer.com/hc/en-us/articles/212188826-About-media-source-types">About media source types</a>, AppsFlyer. Self-reporting networks do not rely on the advertiser’s attribution link.</li>
+      <li><a href="https://support.appsflyer.com/hc/en-us/articles/19384888063249-Discrepancies-between-AppsFlyer-and-third-party-platforms">Discrepancies between AppsFlyer and third-party platforms</a>. Meta redaction on postbacks to Amplitude.</li>
+      <li><a href="https://developer.android.com/google/play/installreferrer/library">Play Install Referrer library</a> and <a href="https://developer.android.com/google/play/installreferrer/igetinstallreferrerservice">the Install Referrer API</a>, Google. Package name, stored referrer, 90 days.</li>
+      <li><a href="https://amplitude.com/docs/apis/analytics/attribution">Attribution API</a> and <a href="https://amplitude.com/docs/data/source-catalog/appsflyer">AppsFlyer source</a>, Amplitude. The endpoint, the join keys, the 72-hour drop, and the two AppsFlyer integrations.</li>
+    </ul>
+    <h2>What I could not verify</h2>
+    <ul>
+      <li>Meta’s current request and response fields when an MMP asks it to claim an install. AppsFlyer documents the direction. I did not find the schema.</li>
+      <li>Meta’s field name for an app-install click identifier. “Click id” in this note is a teaching label.</li>
+      <li>Whether the AdAttributionKit postback bytes leave the device or an Apple server. The overview says a signed signal from Apple. The framework docs describe delivery to the network’s registered URL. I am not choosing a transport beyond that.</li>
+      <li>The numeric crowd-anonymity thresholds for each postback field.</li>
+      <li>Which host an Android Attribution API client must use. The page’s main text and its Android sample disagree.</li>
+      <li>The exact AppsFlyer screen where the Amplitude API key is entered. Amplitude points to AppsFlyer for that setup, and the English page did not come back in search.</li>
+      <li>Any MMP other than AppsFlyer. I did not read their Amplitude integrations, so I did not generalize.</li>
+      <li>Whether a given MMP is registered to receive Apple postbacks itself, or only sees what the ad network or the developer forwards.</li>
+      <li>How an iOS-only app is treated when AppsFlyer says a non-AMM Meta postback is limited to install-referrer installs. iOS has no Play install referrer, and the paragraph does not spell out that case.</li>
+    </ul>
+  </div>
+  <div data-lang="zh">
+    <h2>来源</h2>
+    <p>核对日期：2026 年 11 月 10 日。</p>
+    <ul>
+      <li><a href="https://developer.apple.com/app-store/user-privacy-and-data-use/">用户隐私与数据使用</a>，Apple。ATT、广告标识符、IDFV、指纹识别，以及延迟深链。</li>
+      <li><a href="https://developer.apple.com/app-store/ad-attribution/">用 AdAttributionKit 衡量广告效果</a>，Apple。回传、时间窗、有条件的字段，以及禁止指纹识别。</li>
+      <li><a href="https://developer.apple.com/documentation/adattributionkit">AdAttributionKit</a>，Apple。参与方，以及回传发给广告网络和选择接收的开发者。</li>
+      <li><a href="https://support.appsflyer.com/hc/en-us/articles/207447053-AppsFlyer-attribution-model">AppsFlyer 归因模型</a>。第一次打开和下载的差别、自报告广告网络、引荐来源，以及那里的“自然量”是什么意思。</li>
+      <li><a href="https://support.appsflyer.com/hc/en-us/articles/212188826-About-media-source-types">媒体来源类型</a>，AppsFlyer。自报告广告网络不依赖广告主的归因链接。</li>
+      <li><a href="https://support.appsflyer.com/hc/en-us/articles/19384888063249-Discrepancies-between-AppsFlyer-and-third-party-platforms">AppsFlyer 与第三方平台的差异</a>。发给 Amplitude 的 Meta 回传会被涂掉。</li>
+      <li><a href="https://developer.android.com/google/play/installreferrer/library">Play Install Referrer 库</a>和<a href="https://developer.android.com/google/play/installreferrer/igetinstallreferrerservice">Install Referrer API</a>，Google。包名、存下的引荐来源、90 天。</li>
+      <li><a href="https://amplitude.com/docs/apis/analytics/attribution">归因接口</a>和<a href="https://amplitude.com/docs/data/source-catalog/appsflyer">AppsFlyer 数据源</a>，Amplitude。接口、拼接用的标识、72 小时后丢弃，以及 AppsFlyer 的两种集成。</li>
+    </ul>
+    <h2>我没能核实的问题</h2>
+    <ul>
+      <li>MMP 请 Meta 认领一次安装时，Meta 当前的请求和响应字段。AppsFlyer 写了方向。我没有找到字段定义。</li>
+      <li>Meta 给“应用安装的一次点击”使用的字段名。这篇笔记里的“点击标识”是教学叫法。</li>
+      <li>AdAttributionKit 回传的字节是从设备发出，还是从 Apple 的服务器发出。概述写的是来自 Apple 的签名信号。框架文档写的是发到广告网络注册的 URL。除此之外，我不选一种传输方式。</li>
+      <li>每个回传字段对应的人群匿名数量门槛。</li>
+      <li>Android 归因接口的客户端必须使用哪一个主机。页面正文和它的 Android 示例不一致。</li>
+      <li>AppsFlyer 里填写 Amplitude API key 的具体界面。Amplitude 把这项设置指到 AppsFlyer，英文页面没有出现在检索结果里。</li>
+      <li>AppsFlyer 以外的 MMP。我没有读它们和 Amplitude 的集成，所以没有外推。</li>
+      <li>某一家 MMP 是自己注册接收 Apple 回传，还是只能看到广告网络或开发者转来的内容。</li>
+      <li>当 AppsFlyer 说未接受 AMM 的 Meta 回传只限于安装引荐来源时，只做 iOS 的应用会怎样。iOS 没有 Play 的安装引荐来源，那段话没有写明这种情况。</li>
+    </ul>
+  </div>
+</BilingualNote>
+
+<style>
+  .viz { width: min(1100px, calc(100vw - 48px)); margin: 8px 0 40px; position: relative; left: 50%; transform: translateX(-50%); }
+  .viz iframe { width: 100%; height: 860px; border: 1px solid var(--ink); background: var(--paper); box-shadow: 9px 9px 0 var(--acid); }
+  figcaption { margin-top: 14px; color: var(--muted); font: 500 11px var(--mono); }
+  figcaption a { color: inherit; }
+  pre { overflow-x: auto; padding: 14px 16px; background: var(--card); border: 1px solid var(--line); }
+  pre code { background: transparent; padding: 0; }
+  @media (max-width: 860px) {
+    .viz { width: 100%; left: auto; transform: none; }
+    .viz iframe { height: 1360px; box-shadow: 6px 6px 0 var(--acid); }
+  }
+</style>

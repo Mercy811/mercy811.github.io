@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Mobile attribution map</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500&display=swap">
+<style>
+  :root {
+    --paper: #f3f0e8;
+    --ink: #151a17;
+    --muted: #5f665f;
+    --line: #c9cec4;
+    --meta: #d9e6ff;
+    --apple: #ffd8cc;
+    --mmp: #d9f5e2;
+    --amp: #ffd6e4;
+    --app: #e4e0ff;
+    --sans: Manrope, sans-serif;
+    --serif: Newsreader, serif;
+    --mono: "DM Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: var(--sans); line-height: 1.45; }
+  button, summary { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  .wrap { padding: 16px 16px 28px; }
+  .top { display: flex; justify-content: space-between; gap: 16px; align-items: flex-end; margin-bottom: 14px; }
+  h1 { margin: 0; font: 500 28px/1 var(--serif); letter-spacing: -.03em; }
+  .lede { margin: 6px 0 0; max-width: 640px; color: var(--muted); font-size: 14px; }
+  .lang { display: inline-flex; padding: 3px; border: 1px solid var(--ink); border-radius: 100px; background: var(--paper); }
+  .lang[hidden] { display: none !important; }
+  .lang a { min-width: 44px; padding: 6px 10px; border-radius: 100px; text-decoration: none; text-align: center; font: 500 11px var(--mono); }
+  .lang a[aria-current="page"] { background: var(--ink); color: var(--paper); }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 0 0 12px; padding: 0; list-style: none; font: 11px var(--mono); color: var(--muted); }
+  .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; border: 1px solid var(--ink); vertical-align: -1px; }
+  .stage { position: relative; padding: 28px 96px; }
+  svg.wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+  svg.wires path.hit { pointer-events: stroke; cursor: pointer; fill: none; stroke: transparent; stroke-width: 14; }
+  svg.wires path.line { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  .board { display: grid; grid-template-columns: 88px minmax(220px, 1fr) minmax(210px, .9fr); gap: 16px 120px; align-items: start; }
+  .box { border: 1.5px solid var(--ink); background: #fbf9f3; padding: 10px; }
+  .box h2 { margin: 0 0 8px; font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+  .phone { background: var(--paper); display: flex; flex-direction: column; gap: 8px; }
+  .apps { display: flex; flex-direction: column; gap: 26px; }
+  #rail { display: none; }
+  .app-box { border: 1px solid var(--ink); padding: 8px; }
+  .instagram { background: var(--meta); }
+  .store { background: var(--apple); }
+  .cosmere { background: var(--app); }
+  .clouds { display: flex; flex-direction: column; gap: 26px; }
+  .node { display: block; width: 100%; text-align: left; border: 1.5px solid var(--ink); background: var(--paper); padding: 8px 10px; border-radius: 2px; }
+  .node small { display: block; margin-top: 3px; color: var(--muted); font: 11px var(--mono); font-weight: 400; }
+  .node[aria-pressed="true"], .box[aria-pressed="true"] { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .node:focus-visible, .term:focus-visible, .lang a:focus-visible { outline: 2px solid #7467ff; outline-offset: 2px; }
+  .person { min-height: 100%; display: flex; align-items: center; }
+  .meta { background: var(--meta); }
+  .apple { background: var(--apple); }
+  .mmp { background: var(--mmp); }
+  .amp { background: var(--amp); }
+  .app { background: var(--app); }
+  .neutral { background: var(--paper); }
+  .nested { margin-top: 8px; }
+  .edge-label { position: absolute; z-index: 2; max-width: 108px; transform: translate(-50%, -50%); border: 1px solid var(--ink); background: var(--paper); padding: 3px 6px; font: 500 10px/1.25 var(--mono); text-align: center; }
+  .edge-label[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  .detail, .term-body { margin-top: 14px; border-top: 1px solid var(--ink); padding-top: 12px; }
+  .detail h3, .term-body h3 { margin: 0 0 6px; font: 500 22px/1.1 var(--serif); }
+  .detail p, .term-body p { margin: 0 0 8px; font-size: 14px; }
+  .terms { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .term { border: 1px solid var(--ink); border-radius: 100px; background: transparent; padding: 5px 10px; font: 500 11px var(--mono); }
+  .term[aria-expanded="true"] { background: var(--ink); color: var(--paper); }
+  .tip { position: fixed; z-index: 5; max-width: 260px; padding: 8px 10px; background: var(--ink); color: #f3f0e8; font-size: 12px; pointer-events: none; }
+  @media (max-width: 860px) {
+    .board { grid-template-columns: minmax(0, 1fr) 112px; gap: 12px; }
+    .person, .phone, .clouds { grid-column: 1; }
+    #rail { display: block; grid-column: 2; grid-row: 1 / span 3; }
+    .person { min-height: 0; }
+    .stage { padding: 12px; }
+    h1 { font-size: 24px; }
+    .edge-label { max-width: 104px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1 id="title"></h1>
+      <p class="lede" id="lede"></p>
+    </div>
+    <nav class="lang" id="lang" aria-label="Language / 语言">
+      <a id="lang-en" href="?lang=en">EN</a>
+      <a id="lang-zh" href="?lang=zh">中文</a>
+    </nav>
+  </div>
+  <ul class="legend" id="legend"></ul>
+  <div class="stage" id="stage">
+    <svg class="wires" id="wires" aria-hidden="true"></svg>
+    <div class="board">
+      <div class="person"><button type="button" class="node neutral" id="alex" data-node="alex"></button></div>
+      <section class="box phone" id="phone">
+        <h2><button type="button" class="node neutral" id="phone-btn" data-node="phone"></button></h2>
+        <div class="apps">
+          <div class="app-box instagram">
+            <button type="button" class="node meta" id="instagram" data-node="instagram"></button>
+            <button type="button" class="node meta nested" id="ad" data-node="ad"></button>
+          </div>
+          <div class="app-box store">
+            <button type="button" class="node apple" id="store" data-node="store"></button>
+          </div>
+          <div class="app-box cosmere" id="cosmere-app">
+            <button type="button" class="node app" id="cosmere" data-node="cosmere"></button>
+            <button type="button" class="node mmp nested" id="mmp-sdk" data-node="mmp-sdk"></button>
+            <button type="button" class="node amp nested" id="amp-sdk" data-node="amp-sdk"></button>
+          </div>
+        </div>
+      </section>
+      <div id="rail" aria-hidden="true"></div>
+      <div class="clouds" id="clouds">
+        <button type="button" class="node meta" id="meta" data-node="meta"></button>
+        <div class="app-box mmp" id="mmp">
+          <button type="button" class="node mmp" id="mmp-backend" data-node="mmp"></button>
+          <button type="button" class="node mmp nested" id="matcher" data-node="matcher"></button>
+        </div>
+        <button type="button" class="node apple" id="apple" data-node="apple"></button>
+        <button type="button" class="node amp" id="amplitude" data-node="amplitude"></button>
+      </div>
+    </div>
+  </div>
+  <section class="detail" id="detail" aria-live="polite"></section>
+  <div class="terms" id="terms"></div>
+  <section class="term-body" id="term-body" hidden></section>
+</div>
+<div class="tip" id="tip" hidden></div>
+<script>
+(() => {
+  const lang = new URLSearchParams(location.search).get('lang') === 'zh' ? 'zh' : 'en';
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  if (window.parent === window) {
+    document.getElementById(lang === 'zh' ? 'lang-zh' : 'lang-en').setAttribute('aria-current', 'page');
+  } else {
+    document.getElementById('lang').hidden = true;
+  }
+
+  const t = {
+    en: {
+      title: 'Where campaign 456 can travel',
+      lede: 'A teaching map of one iPhone. Click a box or a line. The colors are owners, not steps.',
+      legend: [['#d9e6ff', 'Meta'], ['#ffd8cc', 'Apple'], ['#d9f5e2', 'MMP'], ['#ffd6e4', 'Amplitude'], ['#e4e0ff', 'Cosmere']],
+      nodes: {
+        alex: ['Alex', 'The person using the phone.', 'Attribution usually does not learn the name Alex. It tries to relate an ad interaction to an app install with whatever identifier that path is allowed to use.'],
+        phone: ['Alex’s iPhone', 'The hardware.', 'Instagram, the App Store client, and Cosmere are separate programs on this phone. The phone is not itself an ad network or an MMP.'],
+        instagram: ['Instagram', 'Meta’s app, where the ad is shown.', 'This is the publisher app. It is not Cosmere, and it does not contain Cosmere’s SDKs.'],
+        ad: ['Cosmere ad', 'Meta campaign 456.', 'The ad is a Meta object shown inside Instagram. Tapping it is not the same event as installing Cosmere.'],
+        store: ['App Store client', 'Apple’s store app on the phone.', 'It shows Cosmere’s product page and installs the ordinary app. It does not write campaign 456 into the binary, and it is not Apple’s AdAttributionKit service.'],
+        cosmere: ['Cosmere', 'The advertised app.', 'The developer ships one app to everyone. Campaign 456 is not baked into that binary. Two SDKs live inside it, and they have different owners.'],
+        'mmp-sdk': ['MMP SDK', 'Code inside Cosmere.', 'An MMP SDK, for example AppsFlyer’s, runs only after Cosmere runs. It can read what iOS lets this app read. It cannot see Instagram’s memory.'],
+        'amp-sdk': ['Amplitude SDK', 'Separate code inside Cosmere.', 'It records product events, such as the first open, and sends them to Amplitude. It does not decide which ad was tapped.'],
+        meta: ['Meta backend', 'Meta’s servers, off the phone.', 'Meta can record that this ad was tapped. For a self-reporting network, AppsFlyer says the MMP later asks Meta whether Meta claims the install. Meta’s answer is not the same thing as a file the App Store puts in the app.'],
+        mmp: ['MMP backend', 'The MMP’s servers, off the phone.', 'Matching lives here. The SDK reports the first open. The backend compares that report with what it already stored, or asks a self-reporting network. The result is data this backend produces.'],
+        matcher: ['Matching', 'A job inside the MMP backend.', 'Not a company and not a fourth SDK. It is the MMP deciding, from the signals it is allowed to use, whether this install lines up with a recorded ad interaction.'],
+        apple: ['Apple attribution service', 'AdAttributionKit / SKAdNetwork, off the phone.', 'This is not the App Store client. Apple produces a signed, delayed, campaign-level postback. It is built not to identify Alex or the device across companies.'],
+        amplitude: ['Amplitude backend', 'Amplitude’s servers, off the phone.', 'The attribution endpoint receives a message someone sends. It does not watch the ad. It tries to join that message to product events that share an identifier.']
+      },
+      edges: {
+        tap: ['Tap ad', 'Alex’s tap opens Cosmere’s App Store page.', 'The ad is the sender of the navigation. The App Store client is the receiver. This hop does not carry a guaranteed copy of campaign 456 into the future app.'],
+        install: ['Install app', 'The App Store installs the standard Cosmere binary.', 'Install is the download onto the phone. The MMP SDK has not run yet. Campaign 456 is not written into the app.'],
+        record: ['Records the tap', 'Instagram’s ad tells Meta’s backend about the interaction.', 'Meta can store the campaign, the time, and whatever identifier that app is allowed to read. This does not require the tap to pass through an MMP redirect. AppsFlyer says self-reporting networks do not use the advertiser’s attribution link.'],
+        query: ['Claim query', 'After the first open, the MMP asks Meta.', 'AppsFlyer documents this direction for self-reporting networks: the MMP queries Meta with a device identifier when one is available and, on iOS, when tracking permission has been granted. I have not verified Meta’s request schema.'],
+        answer: ['Claim answer', 'Meta answers the MMP.', 'Meta can confirm a claim and return campaign details to the MMP. That answer is Meta’s attribution, under Meta’s rules. It is not yet an Amplitude event, and it is not proof the system knows Alex’s name.'],
+        open: ['First-open signals', 'The MMP SDK reports to the MMP backend.', 'This is the first time the MMP’s code in Cosmere can speak. It sends the identifiers iOS allows this app to read, plus the MMP’s own id for this app install. It cannot include a click id it never saw.'],
+        events: ['Product events', 'The Amplitude SDK reports to Amplitude.', 'These are product events, such as the app opening. They are a different stream from the MMP’s attribution message.'],
+        forward: ['Attribution message', 'The MMP backend may forward a result to Amplitude.', 'The message is data. AppsFlyer’s public rules say Meta campaign details are removed or replaced before a postback to Amplitude, so this arrow is not a promise that campaign 456 arrives.'],
+        postback: ['Signed postback', 'Apple’s attribution service to the ad network.', 'A delayed, signed, aggregated postback. Apple’s overview describes it as a signal from Apple. It does not name Alex, and it does not go through the App Store client as a campaign parameter.']
+      },
+      terms: {
+        IDFA: ['IDFA', 'The Identifier for Advertisers is the device’s advertising identifier. On iOS 14.5 and later, an app receives a real value only after that app’s tracking prompt is allowed. Otherwise the value is all zeros. Instagram and Cosmere each need their own permission. One app’s permission does not unlock the identifier for the other company.'],
+        ATT: ['ATT', 'App Tracking Transparency is the iOS prompt and setting that gates tracking across companies’ apps, and access to the advertising identifier. Apple’s public rules also say you may not fingerprint a device to get around that choice. AdAttributionKit does not require the prompt, because it does not identify the person.'],
+        IDFV: ['IDFV', 'The Identifier for Vendor is for apps from the same content provider on one device. Apple says it may be used for analytics across that provider’s own apps, and that it may not be combined to track someone across other companies’ apps. Cosmere’s IDFV is not Instagram’s IDFV. It can help Amplitude and the MMP talk about this install of Cosmere. It cannot match the earlier tap inside Instagram.'],
+        postback: ['Postback', 'A postback is a message one server sends to another about a result. It is not a person and not an identifier by itself. An MMP postback and an Apple AdAttributionKit postback are different messages, with different senders, receivers, and privacy limits.'],
+        'click ID': ['Click ID', 'A click identifier is a value the ad platform creates for one interaction, so that interaction can be named later. It is not a device identifier and not a campaign. Campaign 456 names the campaign. A click id would name Alex’s tap. This map does not invent Meta’s current field name for that value.']
+      }
+    },
+    zh: {
+      title: '广告系列 456 可能经过的地方',
+      lede: '这是一张关于一部 iPhone 的教学图。点击方块或连线。颜色表示归属，不表示步骤顺序。',
+      legend: [['#d9e6ff', 'Meta'], ['#ffd8cc', 'Apple'], ['#d9f5e2', 'MMP'], ['#ffd6e4', 'Amplitude'], ['#e4e0ff', 'Cosmere']],
+      nodes: {
+        alex: ['Alex', '使用这台手机的人。', '归因通常不会得知这个人名叫 Alex。它只是在某条被允许的路径上，试着把一次广告互动和一次应用安装联系起来。'],
+        phone: ['Alex 的 iPhone', '硬件。', 'Instagram、App Store 客户端和 Cosmere 是手机上彼此独立的程序。手机本身不是广告平台，也不是 MMP。'],
+        instagram: ['Instagram', '展示广告的 Meta 应用。', '它是发布广告的应用。它不是 Cosmere，里面也没有 Cosmere 的 SDK。'],
+        ad: ['Cosmere 广告', 'Meta 广告系列 456。', '广告是显示在 Instagram 里的一个 Meta 对象。点击广告和安装 Cosmere 不是同一件事。'],
+        store: ['App Store 客户端', '手机上的 Apple 商店应用。', '它展示 Cosmere 的产品页，并安装那份普通的应用。它不会把广告系列 456 写进安装包，它也不是 Apple 的 AdAttributionKit 服务。'],
+        cosmere: ['Cosmere', '被广告的应用。', '开发者发给所有人的是同一份应用。广告系列 456 并不做进安装包。里面有两个归属不同的 SDK。'],
+        'mmp-sdk': ['MMP SDK', '放在 Cosmere 里的代码。', '例如 AppsFlyer 的 SDK。它只有在 Cosmere 运行之后才会执行。它能读到的，是 iOS 允许这个应用读取的内容。它读不到 Instagram 的内存。'],
+        'amp-sdk': ['Amplitude SDK', '放在 Cosmere 里的另一段代码。', '它记录产品事件，例如第一次打开，并发送给 Amplitude。它不负责判断刚才点的是哪条广告。'],
+        meta: ['Meta 后端', '手机之外的 Meta 服务器。', 'Meta 可以记下这次点击。对自报告广告网络，AppsFlyer 写的是：应用第一次打开之后，MMP 再去问 Meta 是否认领这次安装。这个回答不是 App Store 放进应用里的文件。'],
+        mmp: ['MMP 后端', '手机之外的 MMP 服务器。', '匹配发生在这里。SDK 上报第一次打开。后端用它被允许使用的信号做比较，或者去问自报告广告网络。归因结果是这个后端产生的数据。'],
+        matcher: ['匹配', 'MMP 后端内部的一项工作。', '它不是另一家公司，也不是第四个 SDK。它是 MMP 在被允许的信号范围内，判断这次安装是否对得上一条已经记下的广告互动。'],
+        apple: ['Apple 归因服务', '手机之外的 AdAttributionKit / SKAdNetwork。', '它不是 App Store 客户端。Apple 生成的是延迟送达、经过签名、按广告系列汇总的回传。这套设计不是用来跨公司认出 Alex 或这台设备的。'],
+        amplitude: ['Amplitude 后端', '手机之外的 Amplitude 服务器。', '归因接口接收别人发来的消息。它并不看着那条广告。它试着用一个共同的标识，把这条消息和产品事件拼在一起。']
+      },
+      edges: {
+        tap: ['点击广告', 'Alex 的点击打开 Cosmere 的 App Store 页面。', '广告是这次跳转的起点，App Store 客户端是终点。这一跳并不保证广告系列 456 会被交给以后安装的应用。'],
+        install: ['安装应用', 'App Store 安装的是标准的 Cosmere 安装包。', '安装是把应用下载到手机上。此时 MMP SDK 还没有运行。广告系列 456 没有被写进应用。'],
+        record: ['记下这次点击', 'Instagram 里的广告把互动告诉 Meta 后端。', 'Meta 可以保存广告系列、时间，以及这个应用当时被允许读取的标识。这一步并不要求点击先经过 MMP 的跳转链接。AppsFlyer 写明，自报告广告网络不使用广告主生成的归因链接。'],
+        query: ['认领询问', '应用第一次打开之后，MMP 询问 Meta。', 'AppsFlyer 记录的方向是：在设备标识可用、并且 iOS 上已获得跟踪许可时，MMP 用这个标识询问 Meta。我没有核实 Meta 请求的具体字段。'],
+        answer: ['认领答复', 'Meta 回答 MMP。', 'Meta 可以确认认领，并把广告系列信息交回 MMP。这是 Meta 在自己的规则下做出的归因。它还不是一条 Amplitude 事件，也不能证明系统知道 Alex 的名字。'],
+        open: ['首次打开时的信号', 'MMP SDK 向 MMP 后端上报。', '这是 Cosmere 里的 MMP 代码第一次能说话。它发送 iOS 允许这个应用读取的标识，以及 MMP 为这次安装生成的自己的编号。它没法附上一个自己从没见过的点击标识。'],
+        events: ['产品事件', 'Amplitude SDK 向 Amplitude 上报。', '这是产品事件，例如应用被打开。它和 MMP 发出的归因消息是两条不同的数据流。'],
+        forward: ['归因消息', 'MMP 后端可能把结果转给 Amplitude。', '这条消息是数据。AppsFlyer 的公开规则写明，发给 Amplitude 之前，Meta 的广告系列细节会被去掉或改写。所以这条线并不保证广告系列 456 能够到达。'],
+        postback: ['签名回传', 'Apple 的归因服务发给广告网络。', '这是延迟送达、经过签名的汇总回传。Apple 的概述把它写成来自 Apple 的签名信号。它不包含 Alex 的名字，也不是 App Store 客户端转交的广告参数。']
+      },
+      terms: {
+        IDFA: ['IDFA', '广告标识符是设备的广告标识。在 iOS 14.5 及之后，应用只有在自己的跟踪提示被允许之后，才能读到非零的值，否则读到的是全零。Instagram 和 Cosmere 各自需要许可。一个应用拿到许可，并不等于另一家公司的应用也能读取。'],
+        ATT: ['ATT', '应用跟踪透明度是 iOS 用来询问、并限制跨公司跟踪的提示和设置，同时也管着广告标识符能不能被读取。Apple 的公开规则还写明，不能用指纹识别绕过这个选择。AdAttributionKit 不需要这个提示，因为它的设计不是用来认出这个人。'],
+        IDFV: ['IDFV', '供应商标识符只在同一内容提供者的应用之间、在同一台设备上共用。Apple 允许它用于这家提供者自己的应用分析，并禁止把它和其他数据拼起来，去跟踪其他公司的应用。Cosmere 的 IDFV 不是 Instagram 的 IDFV。它可以让 Amplitude 和 MMP 谈论这一次 Cosmere 安装，但不能对上之前在 Instagram 里的那次点击。'],
+        postback: ['回传', '回传是一台服务器把某个结果告诉另一台服务器的消息。它本身不是一个人，也不是一个标识符。MMP 的回传和 Apple AdAttributionKit 的回传是不同的消息，发送者、接收者和隐私限制都不一样。'],
+        'click ID': ['点击标识', '点击标识是广告平台为一次互动生成的值，用来在之后指认这一次互动。它不是设备标识，也不是广告系列。广告系列 456 指的是这组广告。点击标识指的是 Alex 的这一下。这张图没有编造 Meta 目前使用的字段名。']
+      }
+    }
+  }[lang];
+
+  document.title = t.title;
+  document.getElementById('title').textContent = t.title;
+  document.getElementById('lede').textContent = t.lede;
+  const legend = document.getElementById('legend');
+  t.legend.forEach(([color, name]) => {
+    const item = document.createElement('li');
+    item.innerHTML = `<i style="background:${color}"></i>${name}`;
+    legend.appendChild(item);
+  });
+
+  const nodeText = {
+    alex: ['Alex', 'Alex'],
+    phone: [t.nodes.phone[0], t.nodes.phone[0]],
+    instagram: ['Instagram', 'Instagram'],
+    ad: [t.nodes.ad[0], t.nodes.ad[1]],
+    store: [t.nodes.store[0], t.nodes.store[1]],
+    cosmere: ['Cosmere', 'Cosmere'],
+    'mmp-sdk': [t.nodes['mmp-sdk'][0], t.nodes['mmp-sdk'][1]],
+    'amp-sdk': [t.nodes['amp-sdk'][0], t.nodes['amp-sdk'][1]],
+    meta: [t.nodes.meta[0], t.nodes.meta[1]],
+    mmp: [t.nodes.mmp[0], t.nodes.mmp[1]],
+    matcher: [t.nodes.matcher[0], t.nodes.matcher[1]],
+    apple: [t.nodes.apple[0], t.nodes.apple[1]],
+    amplitude: [t.nodes.amplitude[0], t.nodes.amplitude[1]]
+  };
+  document.querySelectorAll('[data-node]').forEach((button) => {
+    const [title, sub] = nodeText[button.dataset.node];
+    button.innerHTML = sub && sub !== title ? `${title}<small>${sub}</small>` : title;
+  });
+
+  const edges = [
+    { id: 'tap', from: 'ad', to: 'store', fs: 'bottom', ts: 'top', local: true },
+    { id: 'install', from: 'store', to: 'cosmere-app', fs: 'bottom', ts: 'top', local: true },
+    { id: 'record', from: 'ad', to: 'meta', fs: 'right', ts: 'left', stack: 0, labelDx: 0, labelDy: -26 },
+    { id: 'open', from: 'mmp-sdk', to: 'mmp', fs: 'right', ts: 'left', stack: 1 },
+    { id: 'events', from: 'amp-sdk', to: 'amplitude', fs: 'right', ts: 'left', stack: 2 },
+    { id: 'query', from: 'mmp', to: 'meta', fs: 'left', ts: 'left', lane: 'gap', slot: 0, stack: 3 },
+    { id: 'answer', from: 'meta', to: 'mmp', fs: 'left', ts: 'left', lane: 'gap', slot: 1, stack: 4, labelDy: 22 },
+    { id: 'forward', from: 'mmp', to: 'amplitude', fs: 'right', ts: 'right', lane: 'right', slot: 0, stack: 5 },
+    { id: 'postback', from: 'apple', to: 'meta', fs: 'right', ts: 'right', lane: 'right', slot: 1, stack: 6 }
+  ];
+
+  const stage = document.getElementById('stage');
+  const wires = document.getElementById('wires');
+  const tip = document.getElementById('tip');
+  const detail = document.getElementById('detail');
+  const termBody = document.getElementById('term-body');
+  const labels = new Map();
+
+  function boxOf(id) {
+    const el = document.getElementById(id);
+    const a = el.getBoundingClientRect();
+    const b = stage.getBoundingClientRect();
+    return { x: a.left - b.left, y: a.top - b.top, r: a.right - b.left, btm: a.bottom - b.top, cx: a.left - b.left + a.width / 2, cy: a.top - b.top + a.height / 2 };
+  }
+  function point(box, side) {
+    if (side === 'left') return { x: box.x, y: box.cy };
+    if (side === 'right') return { x: box.r, y: box.cy };
+    if (side === 'top') return { x: box.cx, y: box.y };
+    return { x: box.cx, y: box.btm };
+  }
+  function pad(from, to, amount) {
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const len = Math.hypot(dx, dy) || 1;
+    return { x: to.x - (dx / len) * amount, y: to.y - (dy / len) * amount };
+  }
+
+  function showDetail(kind, id) {
+    document.querySelectorAll('[aria-pressed="true"]').forEach((el) => el.setAttribute('aria-pressed', 'false'));
+    const source = kind === 'node' ? t.nodes[id] : t.edges[id];
+    const button = kind === 'node' ? document.querySelector(`[data-node="${id}"]`) : labels.get(id);
+    if (button) button.setAttribute('aria-pressed', 'true');
+    detail.innerHTML = `<h3></h3><p></p><p></p>`;
+    const [h, p1, p2] = detail.children;
+    h.textContent = source[0];
+    p1.textContent = source[1];
+    p2.textContent = source[2];
+    termBody.hidden = true;
+    document.querySelectorAll('.term').forEach((el) => el.setAttribute('aria-expanded', 'false'));
+  }
+
+  function redraw() {
+    const width = stage.clientWidth;
+    const height = stage.clientHeight;
+    wires.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    wires.replaceChildren();
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    defs.innerHTML = '<marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#151a17"></path></marker>';
+    wires.appendChild(defs);
+    const clouds = boxOf('clouds');
+    const phone = boxOf('phone');
+    const stacked = clouds.y > phone.btm - 8;
+    const rail = document.getElementById('rail').getBoundingClientRect();
+    const stageBox = stage.getBoundingClientRect();
+    edges.forEach((edge) => {
+      const from = boxOf(edge.from);
+      const to = boxOf(edge.to);
+      const leave = point(from, edge.fs);
+      const arrive = point(to, edge.ts);
+      let d;
+      let labelAt;
+      if (edge.local || (!edge.lane && !stacked)) {
+        const end = pad(leave, arrive, 10);
+        const cx = (leave.x + end.x) / 2;
+        d = `M ${leave.x} ${leave.y} C ${cx} ${leave.y}, ${cx} ${end.y}, ${end.x} ${end.y}`;
+        labelAt = { x: cx + (edge.labelDx || 0), y: (leave.y + end.y) / 2 + (edge.labelDy || 0) };
+        if (edge.id === 'record') {
+          const phoneBox = boxOf('phone');
+          const metaBox = boxOf('meta');
+          labelAt = { x: (phoneBox.r + metaBox.x) / 2, y: phoneBox.y + 22 };
+        }
+      } else if (stacked) {
+        const x = rail.left - stageBox.left + 16 + (edge.stack || 0) * 13;
+        const end = pad({ x, y: arrive.y }, arrive, 10);
+        d = `M ${leave.x} ${leave.y} L ${x} ${leave.y} L ${x} ${arrive.y} L ${end.x} ${end.y}`;
+        labelAt = { x, y: leave.y + Math.sign(arrive.y - leave.y) * 18 };
+      } else {
+        const gap = (phone.r + clouds.x) / 2;
+        const x = edge.lane === 'gap' ? gap + (edge.slot - 0.5) * 18 : clouds.r + 34 + edge.slot * 16;
+        const end = pad({ x, y: arrive.y }, arrive, 10);
+        d = `M ${leave.x} ${leave.y} L ${x} ${leave.y} L ${x} ${arrive.y} L ${end.x} ${end.y}`;
+        labelAt = { x, y: (leave.y + arrive.y) / 2 + (edge.labelDy || 0) };
+      }
+      ['hit', 'line'].forEach((kind) => {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('class', kind);
+        if (kind === 'line') path.setAttribute('marker-end', 'url(#arrow)');
+        if (kind === 'hit') path.addEventListener('click', () => showDetail('edge', edge.id));
+        wires.appendChild(path);
+      });
+      let label = labels.get(edge.id);
+      if (!label) {
+        label = document.createElement('button');
+        label.type = 'button';
+        label.className = 'edge-label';
+        label.addEventListener('click', () => showDetail('edge', edge.id));
+        label.addEventListener('mouseenter', (event) => showTip(t.edges[edge.id][2], event));
+        label.addEventListener('mouseleave', hideTip);
+        label.addEventListener('focus', (event) => showTip(t.edges[edge.id][2], event));
+        label.addEventListener('blur', hideTip);
+        stage.appendChild(label);
+        labels.set(edge.id, label);
+      }
+      label.textContent = t.edges[edge.id][0];
+      label.style.left = `${labelAt.x}px`;
+      label.style.top = `${labelAt.y}px`;
+      const halfW = (label.offsetWidth || 72) / 2;
+      const halfH = (label.offsetHeight || 16) / 2;
+      const clampedX = Math.min(width - halfW - 4, Math.max(halfW + 4, labelAt.x));
+      const clampedY = Math.min(height - halfH - 4, Math.max(halfH + 4, labelAt.y));
+      label.style.left = `${clampedX}px`;
+      label.style.top = `${clampedY}px`;
+    });
+  }
+
+  function showTip(text, event) {
+    tip.hidden = false;
+    tip.textContent = text;
+    const x = Math.min(event.clientX + 12, window.innerWidth - 280);
+    const y = Math.min(event.clientY + 14, window.innerHeight - 80);
+    tip.style.left = `${Math.max(8, x)}px`;
+    tip.style.top = `${Math.max(8, y)}px`;
+  }
+  function hideTip() { tip.hidden = true; }
+
+  document.querySelectorAll('[data-node]').forEach((button) => {
+    const id = button.dataset.node;
+    button.addEventListener('click', () => showDetail('node', id));
+    button.addEventListener('mouseenter', (event) => showTip(t.nodes[id][2], event));
+    button.addEventListener('mouseleave', hideTip);
+    button.addEventListener('focus', (event) => showTip(t.nodes[id][2], event));
+    button.addEventListener('blur', hideTip);
+  });
+
+  const terms = document.getElementById('terms');
+  Object.keys(t.terms).forEach((key) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'term';
+    button.textContent = t.terms[key][0];
+    button.setAttribute('aria-expanded', 'false');
+    button.addEventListener('click', () => {
+      const open = button.getAttribute('aria-expanded') === 'true';
+      document.querySelectorAll('.term').forEach((el) => el.setAttribute('aria-expanded', 'false'));
+      if (open) {
+        termBody.hidden = true;
+        return;
+      }
+      button.setAttribute('aria-expanded', 'true');
+      termBody.hidden = false;
+      termBody.innerHTML = '<h3></h3><p></p>';
+      termBody.querySelector('h3').textContent = t.terms[key][0];
+      termBody.querySelector('p').textContent = t.terms[key][1];
+    });
+    terms.appendChild(button);
+  });
+
+  showDetail('node', 'ad');
+  const draw = () => redraw();
+  window.addEventListener('resize', draw);
+  document.fonts.ready.then(draw);
+  draw();
+})();
+</script>
+</body>
+</html>

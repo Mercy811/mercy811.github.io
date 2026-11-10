@@ -26,8 +26,9 @@ Posts are static pages. The thoughts index collects them at build time. No manua
 
 ## Where the file goes
 
-- Workbench essays: `src/pages/thoughts/<kebab-case-slug>.md`, rendered with `src/layouts/Note.astro`.
-- Notes that belong to a project journal: `src/pages/projects/<project>/notes/<kebab-case-slug>.astro` (or `.md`). ThaiCue notes use `src/layouts/ThaiCueNote.astro` and must stay bilingual.
+- Workbench essays in English only: `src/pages/thoughts/<kebab-case-slug>.md`, rendered with `src/layouts/Note.astro`.
+- Bilingual essays that are not ThaiCue notes: `src/pages/projects/<project>/notes/<kebab-case-slug>.astro`, rendered with `src/layouts/BilingualNote.astro`. Export `note` with the English fields plus `titleZh`, `descriptionZh`, `dateZh`, and `projectZh` when the project name is translated. Wrap every visible string, including the figure caption and the references, in `data-lang="en"` and `data-lang="zh"`. The page still defaults to English.
+- ThaiCue notes stay on `src/layouts/ThaiCueNote.astro` and remain bilingual. Do not reuse that layout for other projects. Its accent is ThaiCue blue. Other bilingual notes use the acid rule.
 - A project journal such as `src/pages/projects/thaicue/index.astro` keeps its own list by globbing its `notes/` folder. A note in that folder appears there and in the site-wide thoughts index.
 
 Name the file from the title: lowercase, hyphenated, no dates in the filename. The URL is the path under `src/pages/`.
@@ -90,3 +91,4 @@ Match the existing site. Do not introduce a new palette, type system, or layout.
 - Keep the homepage rhythm: hero, ticker, work list, a short thoughts grid, about. Do not dump every note onto the homepage.
 - Mobile breakpoints follow the current pages (about 700px and 600px). Stack grids, let the header keep the wordmark and GitHub link, and keep the view switch on the page because the primary nav links hide on small screens.
 - English-only pages stay free of Chinese copy. Bilingual pages follow the language rule above.
+- A self-contained interactive page lives in `public/<name>/index.html` and is embedded with `<iframe sandbox="allow-scripts" referrerpolicy="no-referrer">`. Do not add `allow-same-origin`. The embedded document keeps its own restrictive Content-Security-Policy and does not load arbitrary CDNs. A sandboxed frame cannot read the parent language, so a bilingual essay passes `?lang=en` or `?lang=zh` and updates that query when the language toggle changes.

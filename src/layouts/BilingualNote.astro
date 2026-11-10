@@ -1,0 +1,60 @@
+---
+import Base from './Base.astro';
+import LanguageToggle from '../components/LanguageToggle.astro';
+
+const { frontmatter } = Astro.props;
+const project = typeof frontmatter.project === 'string' ? frontmatter.project : '';
+const projectZh = typeof frontmatter.projectZh === 'string' ? frontmatter.projectZh : project;
+const projectHref = typeof frontmatter.projectHref === 'string' ? frontmatter.projectHref : '';
+const externalProject = projectHref.startsWith('http');
+---
+
+<Base title={`${frontmatter.title} — Xinyi Ye`} description={frontmatter.description} titleZh={`${frontmatter.titleZh} — Xinyi Ye`} descriptionZh={frontmatter.descriptionZh}>
+  <article class="prose bilingual-note">
+    <div class="note-tools">
+      <a class="back" href="/thoughts/"><span data-lang="en">← All thoughts</span><span data-lang="zh">← 返回所有思考</span></a>
+      <LanguageToggle />
+    </div>
+    <p class="eyebrow">
+      <span data-lang="en">Working note{project && <> · {projectHref ? <a href={projectHref} target={externalProject ? '_blank' : undefined} rel={externalProject ? 'noreferrer' : undefined}>{project}</a> : project}</>} · {frontmatter.date}</span>
+      <span data-lang="zh">工作笔记{projectZh && <> · {projectHref ? <a href={projectHref} target={externalProject ? '_blank' : undefined} rel={externalProject ? 'noreferrer' : undefined}>{projectZh}</a> : projectZh}</>} · {frontmatter.dateZh}</span>
+    </p>
+    <h1><span data-lang="en">{frontmatter.title}</span><span data-lang="zh">{frontmatter.titleZh}</span></h1>
+    <p class="dek"><span data-lang="en">{frontmatter.description}</span><span data-lang="zh">{frontmatter.descriptionZh}</span></p>
+    <div class="rule"></div>
+    <slot />
+  </article>
+</Base>
+
+<script is:inline>
+  (() => {
+    const syncFrames = () => {
+      const lang = document.documentElement.dataset.language === 'zh' ? 'zh' : 'en';
+      document.querySelectorAll('[data-lang-frame]').forEach((frame) => {
+        const next = frame.getAttribute(lang === 'zh' ? 'data-src-zh' : 'data-src-en');
+        if (!next) return;
+        const current = new URL(frame.src, location.origin);
+        const desired = new URL(next, location.origin);
+        if (current.pathname + current.search !== desired.pathname + desired.search) frame.src = `${desired.pathname}${desired.search}`;
+      });
+    };
+    new MutationObserver(syncFrames).observe(document.documentElement, { attributes: true, attributeFilter: ['data-language'] });
+    document.addEventListener('click', (event) => {
+      if (event.target instanceof Element && event.target.closest('[data-language-button]')) requestAnimationFrame(syncFrames);
+    });
+  })();
+</script>
+
+<style>
+  .note-tools { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 70px; }
+  .back { color: var(--muted); font: 11px var(--mono); text-underline-offset: 5px; }
+  .eyebrow a { color: inherit; }
+  .dek { font: 400 22px/1.5 var(--serif) !important; color: var(--muted) !important; }
+  .rule { width: 100px; height: 5px; margin: 38px 0 50px; background: var(--acid); }
+  :global(.bilingual-note blockquote) { margin: 34px 0; padding: 2px 0 2px 24px; border-left: 4px solid var(--acid); }
+  :global(.bilingual-note blockquote p) { font: 400 21px/1.55 var(--serif); }
+  :global(.bilingual-note code) { font: 14px var(--mono); background: #e6e3da; padding: 2px 5px; }
+  @media (max-width: 700px) {
+    .note-tools { align-items: flex-start; flex-direction: column; margin-bottom: 48px; }
+  }
+</style>
