@@ -2,12 +2,19 @@
 import Base from './Base.astro';
 
 const { frontmatter } = Astro.props;
+const project = typeof frontmatter.project === 'string' ? frontmatter.project : '';
+const projectHref = typeof frontmatter.projectHref === 'string' ? frontmatter.projectHref : '';
+const externalProject = projectHref.startsWith('http');
 ---
 
 <Base title={`${frontmatter.title} — Xinyi Ye`} description={frontmatter.description}>
   <article class="prose">
-    <a class="back" href="/">← Back to the workbench</a>
-    <p class="eyebrow">Working note · {frontmatter.date}</p>
+    <a class="back" href="/thoughts/">← All thoughts</a>
+    <p class="eyebrow">
+      Working note
+      {project && <> · {projectHref ? <a href={projectHref} target={externalProject ? '_blank' : undefined} rel={externalProject ? 'noreferrer' : undefined}>{project}</a> : project}</>}
+      · {frontmatter.date}
+    </p>
     <h1>{frontmatter.title}</h1>
     <p class="dek">{frontmatter.description}</p>
     <div class="rule"></div>
@@ -17,6 +24,7 @@ const { frontmatter } = Astro.props;
 
 <style>
   .back { display: inline-block; margin-bottom: 70px; color: var(--muted); font: 11px var(--mono); text-underline-offset: 5px; }
+  .eyebrow a { color: inherit; }
   .dek { font: 400 22px/1.5 var(--serif) !important; color: var(--muted) !important; }
   .rule { width: 100px; height: 5px; margin: 38px 0 50px; background: var(--acid); }
   :global(.prose code) { font: 14px var(--mono); background: #e6e3da; padding: 2px 5px; }

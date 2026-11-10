@@ -1,5 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
+import { getPosts, teaser } from '../lib/posts';
+
+const thoughts = getPosts().filter((post) => post.href.startsWith('/thoughts/')).slice(0, 2);
 
 const projects = [
   {
@@ -152,10 +155,22 @@ const projects = [
   </section>
 
   <section class="thoughts shell" id="thoughts">
-    <div class="section-intro"><div><p class="eyebrow">Notes from the workbench</p><h2>Working thoughts</h2></div><p>Short essays about measurement, system behavior, and what changes once an idea meets a browser.</p></div>
+    <div class="section-intro">
+      <div><p class="eyebrow">Notes from the workbench</p><h2>Working thoughts</h2></div>
+      <div class="intro-copy">
+        <p>Short essays about measurement, system behavior, and what changes once an idea meets a browser.</p>
+        <a class="browse" href="/thoughts/">Browse by project or timeline →</a>
+      </div>
+    </div>
     <div class="note-grid">
-      <a href="/thoughts/who-owns-domain-gating/"><span class="eyebrow">Analytics architecture · 7 min</span><h3>Who should stop analytics from running on the wrong domain?</h3><p>Copied snippets expose a boundary between customer configuration and platform responsibility.</p><b>Read note →</b></a>
-      <a href="/thoughts/analytics-as-state-machines/"><span class="eyebrow">Analytics systems · 6 min</span><h3>Analytics is less about events than state transitions</h3><p>Why “send an event” is often the least interesting part of reliable measurement.</p><b>Read note →</b></a>
+      {thoughts.map((post) => (
+        <a href={post.href}>
+          <span class="eyebrow">{[post.topic, post.readingTime].filter(Boolean).join(' · ')}</span>
+          <h3>{post.title}</h3>
+          <p>{teaser(post)}</p>
+          <b>Read note →</b>
+        </a>
+      ))}
     </div>
   </section>
 
@@ -195,7 +210,8 @@ const projects = [
   .work, .thoughts { padding-top: 110px; }
   .section-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; padding-bottom: 42px; border-bottom: 1px solid var(--line); }
   .section-intro h2, .about h2 { margin: 12px 0 0; font: 500 clamp(44px, 6vw, 72px)/.95 var(--serif); letter-spacing: -.045em; }
-  .section-intro > p { max-width: 480px; margin: 0 0 6px; color: var(--muted); }
+  .section-intro > p, .intro-copy > p { max-width: 480px; margin: 0 0 6px; color: var(--muted); }
+  .browse { display: inline-block; margin-top: 18px; font: 500 12px var(--mono); text-underline-offset: 5px; }
   .project { display: grid; grid-template-columns: 100px minmax(320px, .85fr) 1.15fr; gap: 40px; padding: 50px 0; border-bottom: 1px solid var(--line); }
   .project-meta { display: flex; flex-direction: column; gap: 8px; font: 10px var(--mono); color: var(--muted); text-transform: uppercase; }
   .project-visual { position: relative; min-height: 310px; overflow: hidden; border-radius: 2px; }

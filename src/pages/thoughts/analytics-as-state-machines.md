@@ -2,7 +2,14 @@
 layout: ../../layouts/Note.astro
 title: Analytics is less about events than state transitions
 description: Why reliable analytics starts with lifecycle and state, not a tracking call.
+summary: Why “send an event” is often the least interesting part of reliable measurement.
 date: September 2026
+published: "2026-09-03"
+order: 2
+project: Engaged dwell
+projectHref: https://mercy811.github.io/amplitude-engaged-dwell-poc/
+topic: Analytics systems
+readingTime: 6 min
 ---
 
 Most analytics examples begin with a call: `track("something happened")`. In production, the harder question is rarely how to make that call. It is deciding when “something” became true—and whether the system will still be alive when we finally know.

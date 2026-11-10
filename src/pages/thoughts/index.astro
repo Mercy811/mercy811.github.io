@@ -1,0 +1,165 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPosts, groupPostsByProject, groupPostsByYear, noteCountLabel, teaser, metaLine } from '../../lib/posts';
+
+const posts = getPosts();
+const projects = groupPostsByProject(posts);
+const years = groupPostsByYear(posts);
+const noteLabel = noteCountLabel(posts.length);
+const projectLabel = `${String(projects.length).padStart(2, '0')} ${projects.length === 1 ? 'project' : 'projects'}`;
+---
+
+<Base title="Working thoughts — Xinyi Ye" description="Notes from the workbench, grouped by project and listed in the order they were written.">
+  <script is:inline>
+    document.documentElement.dataset.thoughtsView = new URLSearchParams(location.search).get('view') === 'timeline' ? 'timeline' : 'project';
+  </script>
+  <section class="browser-hero shell">
+    <div class="hero-tools">
+      <a class="back" href="/">← Back to the workbench</a>
+      <div class="view-toggle" role="group" aria-label="Browse thoughts">
+        <button type="button" data-view-button="project" aria-pressed="true">By project</button>
+        <button type="button" data-view-button="timeline" aria-pressed="false">Timeline</button>
+      </div>
+    </div>
+    <p class="eyebrow">Notes from the workbench</p>
+    <h1>Working thoughts</h1>
+    <p class="lede">Short notes about measurement, products, and what changes once an idea meets a real browser. Every note belongs to a project.</p>
+  </section>
+
+  <section class="catalog shell" data-view-panel="project">
+    <div class="catalog-head">
+      <p class="eyebrow">Grouped by project</p>
+      <span>{noteLabel} · {projectLabel}</span>
+    </div>
+    {projects.length === 0 && <p class="empty">No notes yet.</p>}
+    {projects.map((group, index) => (
+      <section class="project-group" id={group.slug}>
+        <header class="group-head">
+          <span class="index">{String(index + 1).padStart(2, '0')}</span>
+          <h2>{group.project}</h2>
+          {group.href && (
+            <a class="open" href={group.href} target={group.external ? '_blank' : undefined} rel={group.external ? 'noreferrer' : undefined}>
+              {group.external ? 'Open project ↗' : 'Open project →'}
+            </a>
+          )}
+          <p class="eyebrow">{noteCountLabel(group.posts.length)}</p>
+        </header>
+        <div class="entries">
+          {group.posts.map((post) => (
+            <a class="entry" href={post.href}>
+              <p class="eyebrow">{metaLine(post)}</p>
+              <h3>{post.title}</h3>
+              <p>{teaser(post)}</p>
+              <b>Read note →</b>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+  </section>
+
+  <section class="catalog shell" data-view-panel="timeline">
+    <div class="catalog-head">
+      <p class="eyebrow">Newest first</p>
+      <span>{noteLabel}</span>
+    </div>
+    {years.map((year) => (
+      <section class="year">
+        <h2>{year.year}</h2>
+        <ol>
+          {year.posts.map((post) => (
+            <li>
+              <time datetime={post.published}><b>{post.day}</b><span>{post.month} {post.year}</span></time>
+              <span class="rail" aria-hidden="true"></span>
+              <a class="entry" href={post.href}>
+                <p class="eyebrow">{metaLine(post, ['project', 'readingTime'])}</p>
+                <h3>{post.title}</h3>
+                <p>{teaser(post)}</p>
+                <b>Read note →</b>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+  </section>
+</Base>
+
+<script is:inline>
+  (() => {
+    const buttons = document.querySelectorAll('[data-view-button]');
+    const setView = (view, updateUrl) => {
+      const next = view === 'timeline' ? 'timeline' : 'project';
+      document.documentElement.dataset.thoughtsView = next;
+      buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.viewButton === next)));
+      if (!updateUrl) return;
+      const url = new URL(location.href);
+      if (next === 'timeline') url.searchParams.set('view', 'timeline');
+      else url.searchParams.delete('view');
+      history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+    };
+    buttons.forEach((button) => button.addEventListener('click', () => setView(button.dataset.viewButton, true)));
+    setView(new URLSearchParams(location.search).get('view') === 'timeline' ? 'timeline' : 'project', false);
+  })();
+</script>
+
+<style>
+  .browser-hero { padding: 70px 0 72px; }
+  .hero-tools { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 80px; }
+  .back { color: var(--muted); font: 11px var(--mono); text-underline-offset: 5px; }
+  .view-toggle { display: inline-flex; flex: 0 0 auto; padding: 3px; border: 1px solid var(--ink); border-radius: 100px; background: var(--paper); }
+  .view-toggle button { min-width: 48px; padding: 7px 13px; border: 0; border-radius: 100px; background: transparent; color: var(--ink); font: 500 11px var(--mono); cursor: pointer; }
+  .view-toggle button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  .view-toggle button:focus-visible, .entry:focus-visible, .open:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; }
+  h1 { margin: 18px 0 28px; font: 500 clamp(58px, 8vw, 96px)/.88 var(--serif); letter-spacing: -.06em; }
+  .lede { max-width: 680px; margin: 0; font: 400 21px/1.55 var(--serif); }
+  .catalog-head { display: flex; justify-content: space-between; gap: 20px; padding: 20px 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line); }
+  .catalog-head p { margin: 0; }
+  .catalog-head span { color: var(--muted); font: 11px var(--mono); }
+  .empty { color: var(--muted); font: 400 20px/1.5 var(--serif); }
+  .project-group { padding: 42px 0 18px; border-bottom: 1px solid var(--line); }
+  .group-head { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; column-gap: 12px; row-gap: 8px; align-items: start; margin-bottom: 8px; }
+  .index { padding-top: 16px; color: var(--muted); font: 11px var(--mono); }
+  .group-head h2 { margin: 0; font: 500 clamp(36px, 4vw, 52px)/.95 var(--serif); letter-spacing: -.035em; }
+  .group-head .eyebrow { grid-column: 2; margin: 0; }
+  .open { grid-column: 3; grid-row: 1; padding-top: 16px; font: 500 12px var(--mono); text-underline-offset: 5px; white-space: nowrap; }
+  .entry { display: block; padding: 28px 0; text-decoration: none; }
+  .project-group .entry + .entry { border-top: 1px solid var(--line); }
+  .entry h3 { max-width: 760px; margin: 12px 0; font: 500 clamp(30px, 3.5vw, 44px)/1.02 var(--serif); letter-spacing: -.03em; transition: color .15s ease; }
+  .entry p:not(.eyebrow) { max-width: 680px; margin: 0; color: var(--muted); }
+  .entry b { display: inline-block; margin-top: 16px; font: 500 11px var(--mono); }
+  .entry:hover h3 { color: var(--violet); }
+  .year { padding-top: 36px; }
+  .year h2 { margin: 0 0 22px; font: 500 13px var(--mono); letter-spacing: .14em; }
+  .year ol { list-style: none; margin: 0; padding: 0; }
+  .year li { display: grid; grid-template-columns: 92px 28px minmax(0, 1fr); column-gap: 18px; }
+  .rail { position: relative; }
+  .rail::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--line); transform: translateX(-50%); }
+  .year li:first-child .rail::before { top: 12px; }
+  .year li:last-child .rail::before { bottom: calc(100% - 13px); }
+  .rail::after { content: ''; position: absolute; left: 50%; top: 6px; width: 13px; height: 13px; box-sizing: border-box; border: 2px solid var(--ink); border-radius: 50%; background: var(--acid); transform: translateX(-50%); }
+  .year time { padding-top: 0; }
+  .year time b, .year time span { display: block; }
+  .year time b { font: 500 32px/1 var(--serif); letter-spacing: -.03em; }
+  .year time span { margin-top: 6px; color: var(--muted); font: 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+  .year .entry { padding-top: 0; padding-bottom: 42px; }
+  @media (max-width: 700px) {
+    .browser-hero { padding-top: 48px; }
+    .hero-tools { align-items: flex-start; flex-direction: column; margin-bottom: 48px; }
+    .group-head { grid-template-columns: 42px minmax(0, 1fr); }
+    .open { grid-column: 2; grid-row: 3; justify-self: start; padding-top: 8px; }
+    .year li { grid-template-columns: 28px minmax(0, 1fr); column-gap: 14px; }
+    .rail { grid-column: 1; grid-row: 1 / span 2; }
+    .year time, .year .entry { grid-column: 2; }
+    .year time { display: flex; gap: 10px; align-items: baseline; margin-bottom: 10px; }
+    .year time b { font-size: 22px; }
+    .year time span { margin-top: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .entry h3 { transition: none; } }
+</style>
+
+<style is:global>
+  [data-view-panel="timeline"] { display: none !important; }
+  html[data-thoughts-view="timeline"] [data-view-panel="timeline"] { display: block !important; }
+  html[data-thoughts-view="timeline"] [data-view-panel="project"] { display: none !important; }
+</style>

@@ -2,7 +2,13 @@
 layout: ../../layouts/Note.astro
 title: Who should stop analytics from running on the wrong domain?
 description: Copied browser snippets expose a boundary between customer configuration and platform responsibility.
+summary: Copied snippets expose a boundary between customer configuration and platform responsibility.
 date: September 2026
+published: "2026-09-03"
+order: 3
+project: Domain gating
+topic: Analytics architecture
+readingTime: 7 min
 ---
 
 A browser analytics token is public by design. It ships to every visitor, so a copied snippet can send plausible-looking events from a site the customer does not own. The immediate symptom is polluted data. The more interesting question is architectural: **who should prevent it?**
